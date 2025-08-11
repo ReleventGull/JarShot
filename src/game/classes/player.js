@@ -15,11 +15,17 @@ export default class Player extends Phaser.GameObjects.Image {
         this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.sKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
         this.dKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-
     }
+
+    updatePlayerRotation() {
+        const angle = Phaser.Math.Angle.Between(this.x, this.y, this.pointer.x, this.pointer.y)
+        this.setRotation(angle)
+    }
+
     update(delta) {
+        this.pointer = this.scene.input.activePointer
+        this.updatePlayerRotation()
         if(this.wKey.isDown) {
-            console.log(this.speed * delta);
             this.y -= this.speed * delta
         }else if (this.sKey.isDown) {
             this.y += this.speed * delta
