@@ -1,4 +1,4 @@
-import { RIGHT } from "phaser";
+
 
 export default class Enemy extends Phaser.GameObjects.Image {
     constructor(scene) {
