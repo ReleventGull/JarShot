@@ -45,7 +45,7 @@ export class Game extends Scene {
         this.add.existing(this.player)
         this.player.spawnPlayer()
         
-        this.scoreText = this.add.text(0, 0, `Score: ${this.score}`)
+        this.cashText = this.add.text(0, 0, `Cash: ${GameState.playerCash}`)
     }
 
     update (time, delta) {
@@ -61,8 +61,8 @@ export class Game extends Scene {
                     ene.destroy()
                     GameState.playerCash += ene.cashPerKill
                     console.log(GameState.playerCash)
-                    this.score += 1
-                    this.scoreText.setText(`Score: ${this.score}`)
+                    
+                    this.cashText.setText(`Cash: ${GameState.playerCash}`)
                     break;
                 }
             }
