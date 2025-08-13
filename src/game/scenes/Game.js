@@ -44,12 +44,36 @@ export class Game extends Scene {
         this.player = new Player(this)
         this.add.existing(this.player)
         this.player.spawnPlayer()
-        
+        this.player.lives = GameState.playerLives
         this.cashText = this.add.text(0, 0, `Cash: ${GameState.playerCash}`)
     }
 
     update (time, delta) {
         this.player.update(delta)
+        //First for loop for detecting player collision with enemy
+        for(let i = 0; i < this.enemies.children.entries.length; i++) {
+            let ene = this.enemies.children.entries[i]
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            if (checkCollide) {
+                this.player.lives -= 1
+                if(this.player.lives <= 0) {
+                setTimeout(() => {
+                    this.scene.start("MainMenu")
+                    }, 3000)
+                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+                    {
+                        color: "red",
+                        fontSize: "4em"
+                    }
+                ).setOrigin(.5)
+                
+                
+                this.scene.pause()
+            }
+        }
+    }
+
+        //this loop for detecting bullet collision with enemy
         for(let j = 0; j < this.bullets.children.entries.length; j++) {
                 let bul = this.bullets.children.entries[j]
                 let checkCollide;
@@ -60,8 +84,6 @@ export class Game extends Scene {
                     bul.destroy()
                     ene.destroy()
                     GameState.playerCash += ene.cashPerKill
-                    console.log(GameState.playerCash)
-                    
                     this.cashText.setText(`Cash: ${GameState.playerCash}`)
                     break;
                 }
