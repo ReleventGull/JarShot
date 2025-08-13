@@ -1,5 +1,6 @@
 
 export let GameState = {
+    playerCash: 500,
     currentReloadSpeedLevel: 0,
     maxReloadSpeedLevel: 5,
     reloadSpeedMultiplier: 1,

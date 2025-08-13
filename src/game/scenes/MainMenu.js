@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { GameState } from '../classes/upgades'
+import { GameState } from '../classes/gamestate'
 export class MainMenu extends Scene
 {
     constructor ()
