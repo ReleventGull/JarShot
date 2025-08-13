@@ -1,5 +1,7 @@
 
 export let GameState = {
+    playerLives: 1,
+    playerMaxLife: 5,
     playerCash: 500,
     currentReloadSpeedLevel: 0,
     maxReloadSpeedLevel: 5,
