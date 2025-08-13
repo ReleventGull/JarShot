@@ -2,6 +2,7 @@ import { Scene } from 'phaser';
 import Enemy from '../classes/enemy'
 import Bullet from  '../classes/bullet'
 import Player from '../classes/player'
+import { GameState } from '../classes/gamestate'
 export class Game extends Scene {
     constructor ()
     {
@@ -58,6 +59,8 @@ export class Game extends Scene {
                 if(checkCollide) {
                     bul.destroy()
                     ene.destroy()
+                    GameState.playerCash += ene.cashPerKill
+                    console.log(GameState.playerCash)
                     this.score += 1
                     this.scoreText.setText(`Score: ${this.score}`)
                     break;

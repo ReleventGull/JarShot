@@ -8,6 +8,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
     direction;
     direction2;
     speed;
+    cashPerKill = 100;
     spawnEnemy() {
         this.setActive(true)
         this.setVisible(true)
