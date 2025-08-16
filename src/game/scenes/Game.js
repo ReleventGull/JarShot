@@ -1,5 +1,6 @@
 import { Scene } from 'phaser';
 import Enemy from '../classes/enemy'
+import ChaseEnemy from '../classes/chaseEnemy';
 import Bullet from  '../classes/bullet'
 import Player from '../classes/player'
 import { GameState } from '../classes/gamestate'
@@ -22,8 +23,10 @@ export class Game extends Scene {
             let enemy = this.enemies.get() 
             if(enemy) {
                  enemy.spawnEnemy()
-                 this.countDownUntilEnemySpawn = 500
-                 return enemy;
+            }
+            let chaseEnemy = this.chaseEnemies.get()
+            if(chaseEnemy) {
+                chaseEnemy.spawn()
             }
         this.countDownUntilEnemySpawn = 500
     }
@@ -38,6 +41,12 @@ export class Game extends Scene {
         this.enemies = this.add.group({
             classType: Enemy,
             maxSize: 20,
+            runChildUpdate: true
+        })
+
+        this.chaseEnemies = this.add.group({
+            classType: ChaseEnemy,
+            maxSize: 5,
             runChildUpdate: true
         })
         
