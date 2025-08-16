@@ -10,8 +10,6 @@ export class MainMenu extends Scene
     create ()
     {
         this.add.image(512, 384, 'background');
-        console.log(GameState)
-        GameState.calculateReloadSpeed()
 
        this.playButton = this.add.text(512, 300, 'Play', {
             fontFamily: 'Arial Black', fontSize: 50, color: '#ffffff',
@@ -32,7 +30,7 @@ export class MainMenu extends Scene
             this.scene.start('Game');
         })
         this.upgradeButton.on('pointerup', () => {
-            console.log("Sending to upgrades screen...");
+            this.scene.start("Upgrades")
         })
 
     }
