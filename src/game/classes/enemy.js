@@ -12,11 +12,13 @@ export default class Enemy extends Phaser.GameObjects.Image {
     hp = 10
     isHit = 0;
     spawnEnemy() {
+        
         this.setActive(true)
         this.setVisible(true)
         this.setOrigin(0,0)
         this.direction = Phaser.Utils.Array.GetRandom(['vertical', 'horizontal'])
         this.speed = Phaser.Math.GetSpeed(300, 1)
+        console.log("Speed", this.speed);
         if (this.direction == "vertical") {
             let randomPixel = Phaser.Math.Between(0, this.scene.scale.width)
             randomPixel = randomPixel + this.width > this.scene.scale.width ? randomPixel = this.scene.scale.width - this.width : randomPixel
@@ -91,7 +93,11 @@ export default class Enemy extends Phaser.GameObjects.Image {
             console.log("This one doesn't have a direction");
             return;
         }
-
+        console.log("Speed here", this.speed);
+        if(this.speed * 10 <= 6) {
+            this.speed = Phaser.Math.GetSpeed(this.speed * 1000 + (delta / 100), 1)
+        }
+        
      }
 }
 
