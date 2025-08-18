@@ -85,8 +85,9 @@ export class Game extends Scene {
         for(let i = 0; i < this.enemies.children.entries.length; i++) {
             let ene = this.enemies.children.entries[i]
             let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
-            if (checkCollide) {
+            if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.player.lives -= 1
+                ene.isOnPlayer = 300
                 if(this.player.lives <= 0) {
                 setTimeout(() => {
                     this.scene.start("MainMenu")

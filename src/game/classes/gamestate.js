@@ -1,6 +1,6 @@
 
 export let GameState = {
-    playerLives: 1,
+    playerLives: 5,
     playerMaxLife: 5,
     playerCash: 10000,
     upgrades: {
