@@ -24,10 +24,10 @@ export class Game extends Scene {
             if(enemy) {
                  enemy.spawnEnemy()
             }
-            let chaseEnemy = this.chaseEnemies.get()
-            if(chaseEnemy) {
-                chaseEnemy.spawn()
-            }
+            // let chaseEnemy = this.chaseEnemies.get()
+            // if(chaseEnemy) {
+            //     chaseEnemy.spawn()
+            // }
         this.countDownUntilEnemySpawn = 500
     }
 
@@ -99,20 +99,23 @@ export class Game extends Scene {
             }
             if (checkCollide) break;
         }
+
+        //For spawning bullets
         if(this.cooldownCount <= 0) {
-            this.isCooldownActive = false
+            this.isBulletCooldownActive = false
         }
-        if(this.player.pointer.leftButtonDown() && !this.isCooldownActive) {
-            this.cooldownCount = 200
-            this.isCooldownActive = true
+        if(this.player.pointer.leftButtonDown() && !this.isBulletCooldownActive) {
+            this.cooldownCount = 700 - (GameState.upgrades.ReloadSpeed.currentLevel * 100) //adjust for reload speed
+            this.isBulletCooldownActive = true
             let bullet = this.bullets.get()
             if(bullet) {
                 bullet.fire(this.player.pointer.x, this.player.pointer.y, this.player.x, this.player.y)
             }
-        }else if(this.isCooldownActive){
+        }else if(this.isBulletCooldownActive){
             this.cooldownCount -= delta
         }
         
+        //determine enemy spawning
         if(this.countDownUntilEnemySpawn <= 0) {
             this.determineEnemySpawn()
         }else {
