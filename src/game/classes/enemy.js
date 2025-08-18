@@ -9,6 +9,8 @@ export default class Enemy extends Phaser.GameObjects.Image {
     direction2;
     speed;
     cashPerKill = 100;
+    hp = 10
+    isHit = 0;
     spawnEnemy() {
         this.setActive(true)
         this.setVisible(true)
@@ -65,6 +67,12 @@ export default class Enemy extends Phaser.GameObjects.Image {
         this.setVisible(false)
     }
     update(time, delta) {
+        if (this.isHit >= 0) {
+            this.isHit -= delta
+            if(this.isHit < 0) {
+                this.isHit = 0
+            }
+        }
         switch (this.direction2) {
             case "down": 
                 this.moveDown(delta)

@@ -19,15 +19,22 @@ export class Game extends Scene {
     }
 
     determineEnemySpawn() {
-        const chance = Phaser.Math.Between(0,1)
+        const basicChance = Phaser.Math.Between(0,1)   
+        if(basicChance == 1) {
             let enemy = this.enemies.get() 
             if(enemy) {
                  enemy.spawnEnemy()
             }
-            // let chaseEnemy = this.chaseEnemies.get()
-            // if(chaseEnemy) {
-            //     chaseEnemy.spawn()
-            // }
+        }     
+      
+        const chaseChance = Phaser.Math.Between(0, 10)
+        if(chaseChance == 10) {
+            let chaseEnemy = this.chaseEnemies.get()
+            if(chaseEnemy) {
+                chaseEnemy.spawn()
+            }
+        }
+   
         this.countDownUntilEnemySpawn = 500
     }
 
@@ -46,7 +53,7 @@ export class Game extends Scene {
 
         this.chaseEnemies = this.add.group({
             classType: ChaseEnemy,
-            maxSize: 5,
+            maxSize: 1,
             runChildUpdate: true
         })
         
@@ -59,6 +66,21 @@ export class Game extends Scene {
 
     update (time, delta) {
         this.player.update(delta)
+        //For spawning bullets
+        if(this.cooldownCount <= 0) {
+            this.isBulletCooldownActive = false
+        }
+        if(this.player.pointer.leftButtonDown() && !this.isBulletCooldownActive) {
+            this.cooldownCount = 700 - (GameState.upgrades.ReloadSpeed.currentLevel * 100) //adjust for reload speed
+            this.isBulletCooldownActive = true
+            let bullet = this.bullets.get()
+            if(bullet) {
+                bullet.fire(this.player.pointer.x, this.player.pointer.y, this.player.x, this.player.y)
+            }
+        }else if(this.isBulletCooldownActive){
+            this.cooldownCount -= delta
+        }
+       
         //First for loop for detecting player collision with enemy
         for(let i = 0; i < this.enemies.children.entries.length; i++) {
             let ene = this.enemies.children.entries[i]
@@ -81,7 +103,6 @@ export class Game extends Scene {
             }
         }
     }
-
         //this loop for detecting bullet collision with enemy
         for(let j = 0; j < this.bullets.children.entries.length; j++) {
                 let bul = this.bullets.children.entries[j]
@@ -89,32 +110,46 @@ export class Game extends Scene {
             for(let i = 0; i < this.enemies.children.entries.length; i++) {
                 let ene = this.enemies.children.entries[i]
                  checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bul.getBounds(), ene.getBounds())
-                if(checkCollide) {
-                    bul.destroy()
-                    ene.destroy()
-                    GameState.playerCash += ene.cashPerKill
-                    this.cashText.setText(`Cash: ${GameState.playerCash}`)
-                    break;
+                if(checkCollide && !ene.isHit) {
+                    ene.isHit = 100
+                    checkCollide = false
+                    ene.hp -= bul.damage
+                     bul.destroy()
+                    if(ene.hp <= 0) {
+                       
+                        ene.destroy()
+                        GameState.playerCash += ene.cashPerKill
+                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                        break;
+                    }
                 }
             }
             if (checkCollide) break;
         }
 
-        //For spawning bullets
-        if(this.cooldownCount <= 0) {
-            this.isBulletCooldownActive = false
-        }
-        if(this.player.pointer.leftButtonDown() && !this.isBulletCooldownActive) {
-            this.cooldownCount = 700 - (GameState.upgrades.ReloadSpeed.currentLevel * 100) //adjust for reload speed
-            this.isBulletCooldownActive = true
-            let bullet = this.bullets.get()
-            if(bullet) {
-                bullet.fire(this.player.pointer.x, this.player.pointer.y, this.player.x, this.player.y)
+        //For detecting collision with chase enemy
+        for(let j = 0; j < this.bullets.children.entries.length; j++) {
+                let bul = this.bullets.children.entries[j]
+                let checkCollide;
+            for(let i = 0; i < this.chaseEnemies.children.entries.length; i++) {
+                let ene = this.chaseEnemies.children.entries[i]
+                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bul.getBounds(), ene.getBounds())
+                if(checkCollide && !ene.isHit) {
+                    ene.isHit = 100
+                    checkCollide = false
+                    ene.hp -= bul.damage
+                     bul.destroy()
+                    if(ene.hp <= 0) {
+                        ene.destroy()
+                        GameState.playerCash += ene.cashPerKill
+                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                        break;
+                    }
+                }
             }
-        }else if(this.isBulletCooldownActive){
-            this.cooldownCount -= delta
+            if (checkCollide) break;
         }
-        
+
         //determine enemy spawning
         if(this.countDownUntilEnemySpawn <= 0) {
             this.determineEnemySpawn()

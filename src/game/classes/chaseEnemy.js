@@ -14,8 +14,9 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
         let randomSpot = Phaser.Utils.Array.GetRandom(["top", "left", "right", "bottom"])
         this.speed = Phaser.Math.GetSpeed(300, 1)
         this.hp = 20;
+        this.cashPerKill = 150
+        this.isHit = 0
         randomSpot = "right"
-        
         switch(randomSpot) {
             case "top":
                 console.log("Spawning chase enemy...")
@@ -35,6 +36,12 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
         }
     }
     update(time, delta) {
+        if (this.isHit >= 0) {
+        this.isHit -= delta
+            if(this.isHit < 0) {
+                this.isHit = 0
+            }
+        }
         let angle = Phaser.Math.Angle.Between(this.x, this.y, this.scene.player.x, this.scene.player.y)
         let xInc = Math.cos(angle)
         let yInc = Math.sin(angle)
