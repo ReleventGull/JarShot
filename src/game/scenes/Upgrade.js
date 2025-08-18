@@ -12,6 +12,7 @@ export class Upgrades extends Scene
     {
         this.cameras.main.setBackgroundColor(0xff0000);
         let upgradeDots = {}
+        let upgradeCostDisplay = {}
         this.add.image(512, 384, 'background').setAlpha(0.5);
         this.incForRows = 0 //For creating space between the upgrades displayed
         
@@ -20,8 +21,7 @@ export class Upgrades extends Scene
         backButton.on("pointerup", () => {
                 this.scene.start("MainMenu")
         })
-        
-        let cashDisplay = this.add.text(backButton.x, backButton.y - 40, `Cash: ${GameState.playerCash}`).setOrigin(0, 0.5)
+        let cashDisplay = this.add.text(backButton.x, backButton.y - 40, `Cash: ${GameState.playerCash}`).setOrigin(0, 0.5) //Display for cash
  
     
         for(let item in GameState.upgrades){
@@ -29,14 +29,11 @@ export class Upgrades extends Scene
             let currentNameBox = this.add.text(200, 200 + this.incForRows, item).setOrigin(0, .5)
             currentNameBox.width = 200
             upgradeDots[item] = []
-     
             let inc = 40
-
             for(let i = 1; i < GameState.upgrades[item].maxLevel; i++) {
                 upgradeDots[item].push(this.add.rectangle(currentNameBox.x + inc + 100, currentNameBox.y, 20, 12, currentUpgrade.currentLevel > i   ? 0x99999 : 0x999999).setOrigin(0,.5))
                 inc += 40
             }
-
         //Adds the blue upgrade button for when player wants to purchase upgade
         let upgradeButton = this.add.rectangle(currentNameBox.x + 340, currentNameBox.y, 30, 30, 0x99999).setOrigin(0,.5)
         //this code below handles purchases
@@ -45,10 +42,10 @@ export class Upgrades extends Scene
             let cost = (currentUpgrade.costMultiplier * (currentUpgrade.currentLevel - 1)) * currentUpgrade.baseCost + currentUpgrade.baseCost
             if(GameState.playerCash >= cost) {
                 if(currentUpgrade.currentLevel < currentUpgrade.maxLevel) {
-                   
                     currentUpgrade.currentLevel += 1
                     GameState.playerCash -= cost
                     cashDisplay.setText(`Cash: ${GameState.playerCash}`)
+                    upgradeCostDisplay[item].setText((currentUpgrade.costMultiplier * (currentUpgrade.currentLevel - 1)) * currentUpgrade.baseCost + currentUpgrade.baseCost) // Updating cost display
                     //This loop is for changing the colors of the upgrade buttons after the upgrade are applied
                     for(let i = 0; i < upgradeDots[item].length; i++) {
                         let currentUpgradeDot = upgradeDots[item][i]
@@ -63,9 +60,8 @@ export class Upgrades extends Scene
         
         //incremental value for space between each upgrade
         this.incForRows += 40
-
         //displays the cost of the upgrade
-        this.add.text(currentNameBox.x + 400, currentNameBox.y, `${((currentUpgrade.costMultiplier * (currentUpgrade.currentLevel - 1)) * currentUpgrade.baseCost + currentUpgrade.baseCost)}` ).setOrigin(.5)
+        upgradeCostDisplay[item] = this.add.text(currentNameBox.x + 400, currentNameBox.y, `${((currentUpgrade.costMultiplier * (currentUpgrade.currentLevel - 1)) * currentUpgrade.baseCost + currentUpgrade.baseCost)}` ).setOrigin(.5)
         }
     }
 }

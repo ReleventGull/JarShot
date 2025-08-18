@@ -2,7 +2,7 @@
 export let GameState = {
     playerLives: 1,
     playerMaxLife: 5,
-    playerCash: 100,
+    playerCash: 10000,
     upgrades: {
         ReloadSpeed: {
             name: "Reload-Speed",
