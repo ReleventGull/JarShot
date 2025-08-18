@@ -9,8 +9,6 @@ export let GameState = {
             currentLevel: 1,
             costMultiplier: 1.5,
             maxLevel: 6,
-            multiplier: 1,
-            multiplierInc: .2,
             baseCost: 1000,
             calculateReloadSpeed () {
             if(this.currentReloadSpeedLevel >= 5) {
@@ -28,8 +26,6 @@ export let GameState = {
             baseCost: 1000,
             currentLevel: 1,
             maxLevel: 6,
-            multiplier: 1,
-            multiplierInc: .2,
         },
         MovementSpeed: {
             name: "Movement-Speed",
@@ -37,11 +33,7 @@ export let GameState = {
             baseCost: 1000,
             currentLevel: 1,
             maxLevel: 6,
-            multiplier: 1,
-            multiplierInc: .2,
             
         },
-
-
     }  
 }
