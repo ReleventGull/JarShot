@@ -1,10 +1,11 @@
+import { GameState } from "./gamestate";
 export default class Bullet extends Phaser.GameObjects.Image {
             constructor(scene) {
                 super(scene, 0, 0, "bullet"); //super refers to parent class which is Phaser.GameObject.Image
                 this.incX = 0; //How many incremnetal steps to use 
                 this.incY = 0;
                 this.lifespan = 0;
-                this.speed = Phaser.Math.GetSpeed(1000, 1)
+                this.speed = Phaser.Math.GetSpeed((GameState.upgrades.BulletSpeed.currentLevel * 150 * 2), 1)
             }
             
             fire(pointerX, pointerY, playerX, playerY) {
@@ -15,7 +16,7 @@ export default class Bullet extends Phaser.GameObjects.Image {
                 this.setRotation(angle + Math.PI)
                 this.incX = Math.cos(angle); //Tell us which way the bullet should increment on the x and y axis
                 this.incY = Math.sin(angle);
-                this.lifespan = 1000
+                this.lifespan = 5000
             }
 
             removeBullet() {
