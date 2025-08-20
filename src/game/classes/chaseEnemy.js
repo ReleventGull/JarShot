@@ -45,6 +45,12 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
                 this.isHit = 0
             }
         }
+        if(this.isOnPlayer > 0) {
+            this.isOnPlayer -= delta
+            if(this.isOnPlayer < 0){
+                this.isOnPlayer = 0
+            } 
+        }
         let angle = Phaser.Math.Angle.Between(this.container.x, this.container.y, this.scene.player.x, this.scene.player.y)
         let xInc = Math.cos(angle)
         let yInc = Math.sin(angle)

@@ -184,7 +184,7 @@ w
                     ene.hp.updateHealth(bul.damage)
                     bul.destroy()
                     if(ene.hp.currentValue <= 0) {
-                       
+                        ene.hp.destroy()
                         ene.destroy()
                         GameState.playerCash += ene.cashPerKill
                         this.cashText.setText(`Cash: ${GameState.playerCash}`)
