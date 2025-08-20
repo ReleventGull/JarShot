@@ -6,14 +6,12 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
         this.scene = scene
     }
     speed;
-    hp;
     spawn() {
         this.setActive(true) 
         this.setVisible(true)
-        this.setOrigin(.5, .5)
+        this.setOrigin(0,0)
         let randomSpot = Phaser.Utils.Array.GetRandom(["top", "left", "right", "bottom"])
         this.speed = Phaser.Math.GetSpeed(300, 1)
-        this.hp = 20;
         this.cashPerKill = 150
         this.isHit = 0
         randomSpot = "right"
@@ -36,6 +34,7 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
         }
     }
     update(time, delta) {
+        this.hp.setPosition(this.getBottomCenter().x, this.getBottomCenter().y + 12)
         if (this.isHit >= 0) {
         this.isHit -= delta
             if(this.isHit < 0) {
