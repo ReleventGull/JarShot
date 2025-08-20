@@ -3,6 +3,7 @@ import Enemy from '../classes/enemy'
 import ChaseEnemy from '../classes/chaseEnemy';
 import Bullet from  '../classes/bullet'
 import Player from '../classes/player'
+import EnemyHP from '../classes/enemyhp';
 import { GameState } from '../classes/gamestate'
 export class Game extends Scene {
     constructor ()
@@ -27,7 +28,10 @@ export class Game extends Scene {
         if(basicChance == 1) {
             let enemy = this.enemies.get() 
             if(enemy) {
-                 enemy.spawnEnemy()
+                let enemyHpClass = new EnemyHP(this, 10)
+                this.add.existing(enemyHpClass)
+                enemy.hp = enemyHpClass
+                enemy.spawnEnemy()
             }
         }     
       
@@ -35,6 +39,9 @@ export class Game extends Scene {
         if(chaseChance == 10) {
             let chaseEnemy = this.chaseEnemies.get()
             if(chaseEnemy) {
+                let enemyHpClass = new EnemyHP(this, 20)
+                this.add.existing(enemyHpClass)
+                chaseEnemy.hp = enemyHpClass
                 chaseEnemy.spawn()
             }
         }
@@ -61,9 +68,8 @@ export class Game extends Scene {
             runChildUpdate: true
         })
 
-        //Adding health bar container
-        
-        
+    
+                
         this.player = new Player(this)
         this.add.existing(this.player)
         this.player.spawnPlayer()
@@ -72,7 +78,7 @@ export class Game extends Scene {
         
         //Space between each health node
         this.spaceBetweenNodes = 4
-        //Containers holding health nodes
+        //Container holding health nodes
         this.playerHealthBarContainer = this.add.rectangle(this.player.x, this.player.y + 30, (this.playerLives * 15) + ((this.playerLives - 1) * this.spaceBetweenNodes), 8).setOrigin(.5)
         //health nodes for displaying health. Height goes off of parent container
         this.playerHealthNodesList = []
@@ -114,32 +120,32 @@ w
         }
        
         //First for loop for detecting player collision with enemy
-        for(let i = 0; i < this.enemies.children.entries.length; i++) {
-            let ene = this.enemies.children.entries[i]
-            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
-            if (checkCollide && ene.isOnPlayer == 0 ) {
-                this.playerLives -= 1
-                this.updatePlayerHealthBarOnDamage()
-                //the length of cooldown when an enemy hits the player before it can register another hit
-                ene.isOnPlayer = 300 
-                if(this.playerLives <= 0) {
-                setTimeout(() => {
+    //     for(let i = 0; i < this.enemies.children.entries.length; i++) {
+    //         let ene = this.enemies.children.entries[i]
+    //         let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+    //         if (checkCollide && ene.isOnPlayer == 0 ) {
+    //             this.playerLives -= 1
+    //             this.updatePlayerHealthBarOnDamage()
+    //             //the length of cooldown when an enemy hits the player before it can register another hit
+    //             ene.isOnPlayer = 300 
+    //             if(this.playerLives <= 0) {
+    //             setTimeout(() => {
 
-                    this.scene.start("MainMenu")
-                    }, 3000)
-                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
-                    {
-                        color: "red",
-                        fontSize: "4em"
-                    }
-                ).setOrigin(.5)
+    //                 this.scene.start("MainMenu")
+    //                 }, 3000)
+    //             this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+    //                 {
+    //                     color: "red",
+    //                     fontSize: "4em"
+    //                 }
+    //             ).setOrigin(.5)
                 
                 
-                this.scene.pause()
-            }
-        }
-    }
-        //this loop for detecting bullet collision with enemy
+    //             this.scene.pause()
+    //         }
+    //     }
+    // }
+        //this loop for detecting bullet collision with regular enemy
         for(let j = 0; j < this.bullets.children.entries.length; j++) {
                 let bul = this.bullets.children.entries[j]
                 let checkCollide;
@@ -149,9 +155,9 @@ w
                 if(checkCollide && !ene.isHit) {
                     ene.isHit = 100
                     checkCollide = false
-                    ene.hp -= bul.damage
-                     bul.destroy()
-                    if(ene.hp <= 0) {
+                    ene.hp.updateHealth(bul.damage)
+                    bul.destroy()
+                    if(ene.hp.currentValue <= 0) {
                        
                         ene.destroy()
                         GameState.playerCash += ene.cashPerKill
@@ -173,9 +179,10 @@ w
                 if(checkCollide && !ene.isHit) {
                     ene.isHit = 100
                     checkCollide = false
-                    ene.hp -= bul.damage
-                     bul.destroy()
-                    if(ene.hp <= 0) {
+                    ene.hp.updateHealth(bul.damage)
+                    bul.destroy()
+                    if(ene.hp.currentValue <= 0) {
+                        ene.hp.destroy()
                         ene.destroy()
                         GameState.playerCash += ene.cashPerKill
                         this.cashText.setText(`Cash: ${GameState.playerCash}`)
