@@ -12,7 +12,7 @@ export class Game extends Scene {
     }
 
     countDownUntilEnemySpawn = 500
-    score = 0
+    elapsedTime = 0
 
     updatePlayerRotation(pX, pY) {
         const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, pX, pY)
@@ -68,7 +68,8 @@ export class Game extends Scene {
             runChildUpdate: true
         })
 
-    
+        //sets the elapsed time back to 0
+        this.elapsedTime = 0
                 
         this.player = new Player(this)
         this.add.existing(this.player)
@@ -92,7 +93,10 @@ export class Game extends Scene {
     }
 w
     update (time, delta) {
-        //Upgrades the player health bar container position to be under player
+        //Tracks total elapsed time passed
+        this.elapsedTime += delta
+        console.log(Math.floor(this.elapsedTime/1000));
+        //Updates the player health bar container position to be under player
         this.playerHealthBarContainer.setPosition(this.player.x, this.player.y + 30)
         for(let i = 0; i < this.playerHealthNodesList.length; i++) {
             let container = this.playerHealthBarContainer;
