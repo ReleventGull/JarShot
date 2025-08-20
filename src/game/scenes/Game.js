@@ -24,8 +24,13 @@ export class Game extends Scene {
         this.playerHealthNodesList.shift()
     }
     determineEnemySpawn() {
-        const basicChance = Phaser.Math.Between(0,1)   
-        if(basicChance == 1) {
+        let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
+        console.log(elapseMinutes);
+        elapseMinutes = elapseMinutes >= 5 ? 5 : elapseMinutes
+        console.log("after", elapseMinutes);
+        const basicChance = Phaser.Math.Between(0, (5-elapseMinutes))
+        console.log("chance for basic enemy", basicChance);
+        if(basicChance == 0) {
             let enemy = this.enemies.get() 
             if(enemy) {
                 let enemyHpClass = new EnemyHP(this, 10)
@@ -35,7 +40,7 @@ export class Game extends Scene {
             }
         }     
       
-        const chaseChance = Phaser.Math.Between(0, 10)
+        const chaseChance = Phaser.Math.Between(0, 20)
         if(chaseChance == 10) {
             let chaseEnemy = this.chaseEnemies.get()
             if(chaseEnemy) {
@@ -46,7 +51,7 @@ export class Game extends Scene {
             }
         }
    
-        this.countDownUntilEnemySpawn = 500
+        this.countDownUntilEnemySpawn = 200
     }
 
     create () {
@@ -69,7 +74,7 @@ export class Game extends Scene {
         })
 
         //sets the elapsed time back to 0
-        this.elapsedTime = 0
+        this.elapsedTime = 600000
                 
         this.player = new Player(this)
         this.add.existing(this.player)
@@ -95,7 +100,6 @@ w
     update (time, delta) {
         //Tracks total elapsed time passed
         this.elapsedTime += delta
-        console.log(Math.floor(this.elapsedTime/1000));
         //Updates the player health bar container position to be under player
         this.playerHealthBarContainer.setPosition(this.player.x, this.player.y + 30)
         for(let i = 0; i < this.playerHealthNodesList.length; i++) {
