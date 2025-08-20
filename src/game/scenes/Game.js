@@ -120,31 +120,57 @@ w
         }
        
         //First for loop for detecting player collision with enemy
-    //     for(let i = 0; i < this.enemies.children.entries.length; i++) {
-    //         let ene = this.enemies.children.entries[i]
-    //         let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
-    //         if (checkCollide && ene.isOnPlayer == 0 ) {
-    //             this.playerLives -= 1
-    //             this.updatePlayerHealthBarOnDamage()
-    //             //the length of cooldown when an enemy hits the player before it can register another hit
-    //             ene.isOnPlayer = 300 
-    //             if(this.playerLives <= 0) {
-    //             setTimeout(() => {
+        for(let i = 0; i < this.enemies.children.entries.length; i++) {
+            let ene = this.enemies.children.entries[i]
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            if (checkCollide && ene.isOnPlayer == 0 ) {
+                this.playerLives -= 1
+                this.updatePlayerHealthBarOnDamage()
+                //the length of cooldown when an enemy hits the player before it can register another hit
+                ene.isOnPlayer = 300 
+                if(this.playerLives <= 0) {
+                setTimeout(() => {
 
-    //                 this.scene.start("MainMenu")
-    //                 }, 3000)
-    //             this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
-    //                 {
-    //                     color: "red",
-    //                     fontSize: "4em"
-    //                 }
-    //             ).setOrigin(.5)
+                    this.scene.start("MainMenu")
+                    }, 3000)
+                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+                    {
+                        color: "red",
+                        fontSize: "4em"
+                    }
+                ).setOrigin(.5)
                 
                 
-    //             this.scene.pause()
-    //         }
-    //     }
-    // }
+                this.scene.pause()
+            }
+        }
+    }
+        //Seonc for loop for detecting player collision with chase enemy
+        for(let i = 0; i < this.chaseEnemies.children.entries.length; i++) {
+            let ene = this.chaseEnemies.children.entries[i]
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            if (checkCollide && ene.isOnPlayer == 0 ) {
+                this.playerLives -= 1
+                this.updatePlayerHealthBarOnDamage()
+                //the length of cooldown when an enemy hits the player before it can register another hit
+                ene.isOnPlayer = 300 
+                if(this.playerLives <= 0) {
+                setTimeout(() => {
+
+                    this.scene.start("MainMenu")
+                    }, 3000)
+                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+                    {
+                        color: "red",
+                        fontSize: "4em"
+                    }
+                ).setOrigin(.5)
+                
+                
+                this.scene.pause()
+            }
+        }
+    }
         //this loop for detecting bullet collision with regular enemy
         for(let j = 0; j < this.bullets.children.entries.length; j++) {
                 let bul = this.bullets.children.entries[j]
@@ -169,7 +195,7 @@ w
             if (checkCollide) break;
         }
 
-        //For detecting collision with chase enemy
+        //For detecting BULLET collision with chase enemy
         for(let j = 0; j < this.bullets.children.entries.length; j++) {
                 let bul = this.bullets.children.entries[j]
                 let checkCollide;
