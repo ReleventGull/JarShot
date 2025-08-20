@@ -19,7 +19,6 @@ export default class Bullet extends Phaser.GameObjects.Image {
                 this.incX = Math.cos(angle); //Tell us which way the bullet should increment on the x and y axis
                 this.incY = Math.sin(angle);
                 this.lifespan = 5000
-                console.log(this.damage);
             }
 
             removeBullet() {

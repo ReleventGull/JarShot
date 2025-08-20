@@ -22,7 +22,6 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
         randomSpot = "right"
         switch(randomSpot) {
             case "top":
-                console.log("Spawning chase enemy...")
                 this.container.setPosition(Phaser.Math.Between(0, this.scene.scale.width - this.width/2), 0 + (this.width/2))
                 break;
             case"bottom": 

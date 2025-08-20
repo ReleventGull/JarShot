@@ -7,7 +7,6 @@ export default class Player extends Phaser.GameObjects.Image {
     pointer;
     speed;
     spawnPlayer() {
-        console.log("Spawning player...");
         this.setActive(true)
         this.setVisible(true)
         this.setPosition(300, 400)
