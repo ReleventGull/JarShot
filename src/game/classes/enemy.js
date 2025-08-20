@@ -12,54 +12,59 @@ export default class Enemy extends Phaser.GameObjects.Image {
     isHit = 0;
     isOnPlayer = 0
     spawnEnemy() {
+        this.setOrigin(0,0)
+        this.container = this.scene.add.container(0,0)
+        this.hp.setPosition(this.getBottomCenter().x, this.getBottomCenter().y + 12)
+        this.container.add(this)
+        this.container.add(this.hp)
+        
         this.setActive(true)
         this.setVisible(true)
-        this.setOrigin(0,0)
         this.direction = Phaser.Utils.Array.GetRandom(['vertical', 'horizontal'])
         this.speed = Phaser.Math.GetSpeed(300, 1)
         if (this.direction == "vertical") {
             let randomPixel = Phaser.Math.Between(0, this.scene.scale.width)
             randomPixel = randomPixel + this.width > this.scene.scale.width ? randomPixel = this.scene.scale.width - this.width : randomPixel
-            this.setPosition(randomPixel, 0)
+            this.container.setPosition(randomPixel, 0)
             this.direction2 = "down"
         }else {
             let randomPixel = Phaser.Math.Between(0, this.scene.scale.height)
             randomPixel = randomPixel + this.height > this.scene.scale.height ? randomPixel = this.scene.scale.height - this.height : randomPixel
-            this.setPosition(0, randomPixel)
+            this.container.setPosition(0, randomPixel)
             this.direction2 = "right";
         }
     }
     moveDown(delta) {
         let pixelsToMove = this.speed * delta;
-        if(this.y + pixelsToMove + this.height >= this.scene.scale.height) {
+        if(this.container.y + pixelsToMove + this.height >= this.scene.scale.height) {
             this.direction2 = "up"
         }else {
-            this.y += pixelsToMove
+            this.container.y += pixelsToMove
         }
     }
     moveUp(delta) {
         let pixelsToMove = this.speed * delta;
-        if(this.y - pixelsToMove <= 0) {
+        if(this.container.y - pixelsToMove <= 0) {
             this.direction2 = "down"
         }else {
-            this.y -= pixelsToMove
+            this.container.y -= pixelsToMove
         }
     }
 
     moveRight (delta) {
         let pixelsToMove = this.speed * delta;
-        if(pixelsToMove + this.x + this.width >= this.scene.scale.width) {
+        if(pixelsToMove + this.container.x + this.width >= this.scene.scale.width) {
             this.direction2 = "left"
         }else {
-            this.x += pixelsToMove
+            this.container.x += pixelsToMove
         }
     }
     moveLeft (delta) {
         let pixelsToMove = this.speed * delta;
-        if(this.x - pixelsToMove <= 0) {
+        if(this.container.x - pixelsToMove <= 0) {
             this.direction2 = "right"
         }else {
-            this.x -= pixelsToMove
+            this.container.x -= pixelsToMove
         }
     }
     removeEnemy () {
@@ -67,7 +72,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
         this.setVisible(false)
     }
     update(time, delta) {
-        this.hp.setPosition(this.getBottomCenter().x, this.getBottomCenter().y + 12)
+        
         if (this.isHit >= 0) {
             this.isHit -= delta
             if(this.isHit < 0) {
