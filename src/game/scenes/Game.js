@@ -17,7 +17,11 @@ export class Game extends Scene {
         const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, pX, pY)
         this.player.setRotation(angle);
     }
-
+    updatePlayerHealthBarOnDamage() {
+        this.playerHealthBarContainer.width = (this.playerLives * 15) + ((this.playerLives - 1) * this.spaceBetweenNodes)
+        this.playerHealthNodesList[0].destroy()
+        this.playerHealthNodesList.shift()
+    }
     determineEnemySpawn() {
         const basicChance = Phaser.Math.Between(0,1)   
         if(basicChance == 1) {
@@ -56,16 +60,44 @@ export class Game extends Scene {
             maxSize: 1,
             runChildUpdate: true
         })
+
+        //Adding health bar container
+        
         
         this.player = new Player(this)
         this.add.existing(this.player)
         this.player.spawnPlayer()
-        this.player.lives = GameState.playerLives
         this.cashText = this.add.text(0, 0, `Cash: ${GameState.playerCash}`)
+        this.playerLives = GameState.upgrades.PlayerLives.currentLevel
+        
+        //Space between each health node
+        this.spaceBetweenNodes = 4
+        //Containers holding health nodes
+        this.playerHealthBarContainer = this.add.rectangle(this.player.x, this.player.y + 30, (this.playerLives * 15) + ((this.playerLives - 1) * this.spaceBetweenNodes), 8).setOrigin(.5)
+        //health nodes for displaying health. Height goes off of parent container
+        this.playerHealthNodesList = []
+        for(let i = 0; i < GameState.upgrades.PlayerLives.currentLevel; i++) {
+            let container = this.playerHealthBarContainer;
+            let space = (i) * this.spaceBetweenNodes
+            let xCoord = container.x - (container.width/2) + ((i) * 15)
+            this.playerHealthNodesList.push(this.add.rectangle(xCoord + space, container.y, 15, container.height, 0x93939).setOrigin(0, 0.5))
+        }
+        
     }
-
+w
     update (time, delta) {
+        //Upgrades the player health bar container position to be under player
+        this.playerHealthBarContainer.setPosition(this.player.x, this.player.y + 30)
+        for(let i = 0; i < this.playerHealthNodesList.length; i++) {
+            let container = this.playerHealthBarContainer;
+            let space = (i) * this.spaceBetweenNodes
+            let xCoord = container.x - (container.width/2) + ((i) * 15)
+            this.playerHealthNodesList[i].setPosition(xCoord + space, container.y)
+        }
+
+        //send current delta to player
         this.player.update(delta)
+        
         //For spawning bullets
         if(this.cooldownCount <= 0) {
             this.isBulletCooldownActive = false
@@ -86,10 +118,13 @@ export class Game extends Scene {
             let ene = this.enemies.children.entries[i]
             let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
-                this.player.lives -= 1
-                ene.isOnPlayer = 300
-                if(this.player.lives <= 0) {
+                this.playerLives -= 1
+                this.updatePlayerHealthBarOnDamage()
+                //the length of cooldown when an enemy hits the player before it can register another hit
+                ene.isOnPlayer = 300 
+                if(this.playerLives <= 0) {
                 setTimeout(() => {
+
                     this.scene.start("MainMenu")
                     }, 3000)
                 this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",

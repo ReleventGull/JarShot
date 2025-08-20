@@ -1,3 +1,4 @@
+
 export default class Player extends Phaser.GameObjects.Image {
     constructor (scene) {
         super(scene, 0, 0, "player")
@@ -5,7 +6,6 @@ export default class Player extends Phaser.GameObjects.Image {
     }
     pointer;
     speed;
-    lives;
     spawnPlayer() {
         console.log("Spawning player...");
         this.setActive(true)
