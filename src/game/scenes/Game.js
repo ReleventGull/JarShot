@@ -35,7 +35,7 @@ export class Game extends Scene {
                 enemy.hp = enemyHpClass
                 enemy.spawnEnemy()
             }
-        }     
+    }
       
         const chaseChance = Phaser.Math.Between(0, 20)
         if(chaseChance == 10) {
@@ -72,7 +72,8 @@ export class Game extends Scene {
 
         //sets the elapsed time back to 0
         this.elapsedTime = 0
-                
+        //Sets how long the enemies cooldown will be when they attack the player
+        this.isOnPlayerCooldown
         this.player = new Player(this)
         this.add.existing(this.player)
         this.player.spawnPlayer()
@@ -93,7 +94,6 @@ export class Game extends Scene {
         }
         
     }
-w
     update (time, delta) {
         //Tracks total elapsed time passed
         this.elapsedTime += delta
@@ -130,9 +130,10 @@ w
             let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
+                this.player.dimPlayer()
                 this.updatePlayerHealthBarOnDamage()
                 //the length of cooldown when an enemy hits the player before it can register another hit
-                ene.isOnPlayer = 300 
+                ene.isOnPlayer = this.isOnPlayerCooldown 
                 if(this.playerLives <= 0) {
                 setTimeout(() => {
 
@@ -156,12 +157,12 @@ w
             let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
+                this.player.dimPlayer
                 this.updatePlayerHealthBarOnDamage()
                 //the length of cooldown when an enemy hits the player before it can register another hit
-                ene.isOnPlayer = 300 
+                ene.isOnPlayer = this.isOnPlayerCooldown 
                 if(this.playerLives <= 0) {
                 setTimeout(() => {
-
                     this.scene.start("MainMenu")
                     }, 3000)
                 this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
@@ -170,8 +171,6 @@ w
                         fontSize: "4em"
                     }
                 ).setOrigin(.5)
-                
-                
                 this.scene.pause()
             }
         }
