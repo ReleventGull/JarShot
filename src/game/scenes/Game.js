@@ -73,7 +73,7 @@ export class Game extends Scene {
         //sets the elapsed time back to 0
         this.elapsedTime = 0
         //Sets how long the enemies cooldown will be when they attack the player
-        this.isOnPlayerCooldown
+        this.isOnPlayerCooldown = 300
         this.player = new Player(this)
         this.add.existing(this.player)
         this.player.spawnPlayer()
@@ -157,7 +157,7 @@ export class Game extends Scene {
             let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
-                this.player.dimPlayer
+                this.player.dimPlayer()
                 this.updatePlayerHealthBarOnDamage()
                 //the length of cooldown when an enemy hits the player before it can register another hit
                 ene.isOnPlayer = this.isOnPlayerCooldown 
