@@ -37,7 +37,7 @@ export class Game extends Scene {
             }
     }
       
-        const chaseChance = Phaser.Math.Between(0, 20)
+        const chaseChance = Phaser.Math.Between(0, 15-elapseMinutes)
         if(chaseChance == 10) {
             let chaseEnemy = this.chaseEnemies.get()
             if(chaseEnemy) {
@@ -66,12 +66,12 @@ export class Game extends Scene {
 
         this.chaseEnemies = this.add.group({
             classType: ChaseEnemy,
-            maxSize: 1,
+            maxSize: 10,
             runChildUpdate: true
         })
 
         //sets the elapsed time back to 0
-        this.elapsedTime = 0
+        this.elapsedTime = 600000
         //Sets how long the enemies cooldown will be when they attack the player
         this.isOnPlayerCooldown = 300
         this.player = new Player(this)

@@ -6,7 +6,7 @@ export let GameState = {
             name: "Player-Lives",
             costMultiplier: 1.5,
             baseCost: 1000,
-            currentLevel: 6,
+            currentLevel: 1,
             maxLevel: 6,
         },
         ReloadSpeed: {
