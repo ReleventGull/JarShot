@@ -6,6 +6,7 @@ export default class Player extends Phaser.GameObjects.Image {
     }
     pointer;
     speed;
+    dimCooldown = 0
     spawnPlayer() {
         this.setActive(true)
         this.setVisible(true)
@@ -22,7 +23,20 @@ export default class Player extends Phaser.GameObjects.Image {
         this.setRotation(angle)
     }
 
+    dimPlayer () {
+        this.setTint(0xFF0000)
+        this.dimCooldown = 200
+    }
+
     update(delta) {
+        if(this.dimCooldown > 0) {
+            if(this.dimCooldown - delta <= 0) {
+                this.clearTint()
+                this.dimCooldown = 0
+            }else {
+                this.dimCooldown -= delta
+            }
+        }
         this.pointer = this.scene.input.activePointer
         this.updatePlayerRotation()
         if(this.wKey.isDown) {
