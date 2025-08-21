@@ -18,15 +18,16 @@ export class Game extends Scene {
         const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, pX, pY)
         this.player.setRotation(angle);
     }
+    
     updatePlayerHealthBarOnDamage() {
         this.playerHealthBarContainer.width = (this.playerLives * 15) + ((this.playerLives - 1) * this.spaceBetweenNodes)
         this.playerHealthNodesList[0].destroy()
         this.playerHealthNodesList.shift()
     }
+    
     determineEnemySpawn() {
         let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
-        elapseMinutes = elapseMinutes >= 5 ? 5 : elapseMinutes
-        const basicChance = Phaser.Math.Between(0, (5-elapseMinutes))
+        const basicChance = Phaser.Math.Between(0, (5 - (elapseMinutes > 5 ? 5 : elapseMinutes)))
         if(basicChance == 0) {
             let enemy = this.enemies.get() 
             if(enemy) {
@@ -35,10 +36,9 @@ export class Game extends Scene {
                 enemy.hp = enemyHpClass
                 enemy.spawnEnemy()
             }
-    }
-      
-        const chaseChance = Phaser.Math.Between(0, 15-elapseMinutes)
-        if(chaseChance == 10) {
+        }
+        const chaseChance = Phaser.Math.Between(0, 15 - (elapseMinutes > 10 ? 10 : elapseMinutes))
+        if(chaseChance == 0) {
             let chaseEnemy = this.chaseEnemies.get()
             if(chaseEnemy) {
                 let enemyHpClass = new EnemyHP(this, 20)
@@ -47,7 +47,6 @@ export class Game extends Scene {
                 chaseEnemy.spawn()
             }
         }
-   
         this.countDownUntilEnemySpawn = 200
     }
 
@@ -60,7 +59,7 @@ export class Game extends Scene {
         
         this.enemies = this.add.group({
             classType: Enemy,
-            maxSize: 20,
+            maxSize: 30,
             runChildUpdate: true
         })
 
