@@ -25,11 +25,8 @@ export class Game extends Scene {
     }
     determineEnemySpawn() {
         let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
-        console.log(elapseMinutes);
         elapseMinutes = elapseMinutes >= 5 ? 5 : elapseMinutes
-        console.log("after", elapseMinutes);
         const basicChance = Phaser.Math.Between(0, (5-elapseMinutes))
-        console.log("chance for basic enemy", basicChance);
         if(basicChance == 0) {
             let enemy = this.enemies.get() 
             if(enemy) {
@@ -74,7 +71,7 @@ export class Game extends Scene {
         })
 
         //sets the elapsed time back to 0
-        this.elapsedTime = 600000
+        this.elapsedTime = 0
                 
         this.player = new Player(this)
         this.add.existing(this.player)
