@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import TankEnemy from '../classes/tankEnemy';
 import Enemy from '../classes/enemy'
 import ChaseEnemy from '../classes/chaseEnemy';
 import Bullet from  '../classes/bullet'
@@ -27,7 +28,7 @@ export class Game extends Scene {
     
     determineEnemySpawn() {
         let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
-        const basicChance = Phaser.Math.Between(0, (5 - (elapseMinutes > 5 ? 5 : elapseMinutes)))
+        const basicChance = Phaser.Math.Between(0, (10 - (elapseMinutes > 10 ? 10 : elapseMinutes)))
         if(basicChance == 0) {
             let enemy = this.enemies.get() 
             if(enemy) {
@@ -37,7 +38,8 @@ export class Game extends Scene {
                 enemy.spawnEnemy()
             }
         }
-        const chaseChance = Phaser.Math.Between(0, 15 - (elapseMinutes > 10 ? 10 : elapseMinutes))
+        const chaseChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 5 ? 50 : elapseMinutes * 10))
+        console.log((elapseMinutes > 5 ? 50 : elapseMinutes * 10));
         if(chaseChance == 0) {
             let chaseEnemy = this.chaseEnemies.get()
             if(chaseEnemy) {
@@ -47,6 +49,20 @@ export class Game extends Scene {
                 chaseEnemy.spawn()
             }
         }
+        if (elapseMinutes >= 1) {
+            console.log("Im at a minute");
+            const tankChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 10 ? 10 : elapseMinutes))
+            if(tankChance == 0) {
+                let tankEnemy = this.tankEnemies.get()
+                if(tankEnemy) {
+                    let enemyHpClass = new EnemyHP(this, 100)
+                    this.add.existing(enemyHpClass)
+                    tankEnemy.hp = enemyHpClass
+                    tankEnemy.spawn()
+            }
+        }
+    }
+
         this.countDownUntilEnemySpawn = 200
     }
 
@@ -69,8 +85,13 @@ export class Game extends Scene {
             runChildUpdate: true
         })
 
+        this.tankEnemies = this.add.group({
+            classType: TankEnemy,
+            maxSize: 5,
+            runChildUpdate: true
+        })
         //sets the elapsed time back to 0
-        this.elapsedTime = 600000
+        this.elapsedTime = 0
         //Sets how long the enemies cooldown will be when they attack the player
         this.isOnPlayerCooldown = 300
         this.player = new Player(this)
@@ -174,6 +195,32 @@ export class Game extends Scene {
             }
         }
     }
+        //for detecting player collision with the tank enemies
+        for(let i = 0; i < this.tankEnemies.children.entries.length; i++) {
+            let ene = this.tankEnemies.children.entries[i]
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            if (checkCollide && ene.isOnPlayer == 0 ) {
+                this.playerLives -= 1
+                this.player.dimPlayer()
+                this.updatePlayerHealthBarOnDamage()
+                //the length of cooldown when an enemy hits the player before it can register another hit
+                ene.isOnPlayer = this.isOnPlayerCooldown 
+                if(this.playerLives <= 0) {
+                setTimeout(() => {
+                    this.scene.start("MainMenu")
+                    }, 3000)
+                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+                    {
+                        color: "red",
+                        fontSize: "4em"
+                    }
+                ).setOrigin(.5)
+                
+                
+                this.scene.pause()
+            }
+        }
+    }
         //this loop for detecting bullet collision with regular enemy
         for(let j = 0; j < this.bullets.children.entries.length; j++) {
                 let bul = this.bullets.children.entries[j]
@@ -221,7 +268,29 @@ export class Game extends Scene {
             }
             if (checkCollide) break;
         }
-
+        //For detecting bullet collision with tank Enemies
+        for(let j = 0; j < this.bullets.children.entries.length; j++) {
+                let bul = this.bullets.children.entries[j]
+                let checkCollide;
+            for(let i = 0; i < this.tankEnemies.children.entries.length; i++) {
+                let ene = this.tankEnemies.children.entries[i]
+                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bul.getBounds(), ene.getBounds())
+                if(checkCollide && !ene.isHit) {
+                    ene.isHit = 100
+                    checkCollide = false
+                    ene.hp.updateHealth(bul.damage)
+                    bul.destroy()
+                    if(ene.hp.currentValue <= 0) {
+                        ene.hp.destroy()
+                        ene.destroy()
+                        GameState.playerCash += ene.cashPerKill
+                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                        break;
+                    }
+                }
+            }
+            if (checkCollide) break;
+        }
         //determine enemy spawning
         if(this.countDownUntilEnemySpawn <= 0) {
             this.determineEnemySpawn()
