@@ -45,6 +45,8 @@ export class Preloader extends Scene
         this.load.image("upgrades", "upgradesbutton.png")
 
         this.load.image("chaseEnemy", "chaseEnemy.png")
+
+        this.load.image("tankEnemy", "tankEnemy.png")
     }
 
     create ()

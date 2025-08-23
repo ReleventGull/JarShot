@@ -1,12 +1,12 @@
 
 
-export default class ChaseEnemy extends Phaser.GameObjects.Image {
+export default class TankEnemy extends Phaser.GameObjects.Image {
     constructor(scene) {
-        super(scene, 0, 0, "chaseEnemy")
+        super(scene, 0, 0, "tankEnemy")
         this.scene = scene
     }
     speed;
-    cashPerKill = 300;
+    cashPerKill = 150;
     isOnPlayer = 0;
     isHiit = 0
     speed;
@@ -19,7 +19,7 @@ export default class ChaseEnemy extends Phaser.GameObjects.Image {
         this.setVisible(true)
         this.setOrigin(.5)
         let randomSpot = Phaser.Utils.Array.GetRandom(["top", "left", "right", "bottom"])
-        this.speed = Phaser.Math.GetSpeed(300, 1)
+        this.speed = Phaser.Math.GetSpeed(100, 1)
         randomSpot = "right"
         switch(randomSpot) {
             case "top":
