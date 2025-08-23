@@ -30,6 +30,13 @@ export let GameState = {
             currentLevel: 1,
             maxLevel: 6,
         },
+        Turrets: {
+            name: "Turrets",
+            costMultiplier: 1.5,
+            baseCost: 3000,
+            currentLevel: 2,
+            maxLevel: 6,
+        },
 
     }  
 }
