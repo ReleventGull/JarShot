@@ -5,6 +5,7 @@ import ChaseEnemy from '../classes/chaseEnemy';
 import Bullet from  '../classes/bullet'
 import Player from '../classes/player'
 import EnemyHP from '../classes/enemyhp';
+import { Turret } from '../classes/turret';
 import { GameState } from '../classes/gamestate'
 export class Game extends Scene {
     constructor ()
@@ -26,6 +27,14 @@ export class Game extends Scene {
         this.playerHealthNodesList.shift()
     }
     
+    spawnTurret() {
+        let turret = this.turrets.get()
+        if(turret) {
+            turret.spawnTurret()
+        }
+
+    }
+
     determineEnemySpawn() {
         let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
         const basicChance = Phaser.Math.Between(0, (10 - (elapseMinutes > 10 ? 10 : elapseMinutes)))
@@ -90,6 +99,13 @@ export class Game extends Scene {
             maxSize: 5,
             runChildUpdate: true
         })
+
+        this.turrets = this.add.group( {
+            classType: Turret,
+            maxSize: GameState.upgrades.Turrets.currentLevel - 1,
+            runChildUpdate: true
+
+        })
         //sets the elapsed time back to 0
         this.elapsedTime = 0
         //Sets how long the enemies cooldown will be when they attack the player
@@ -112,6 +128,10 @@ export class Game extends Scene {
             let xCoord = container.x - (container.width/2) + ((i) * 15)
             this.playerHealthNodesList.push(this.add.rectangle(xCoord + space, container.y, 15, container.height, 0x93939).setOrigin(0, 0.5))
         }
+      this.input.keyboard.on("keydown-R", () => {
+        this.spawnTurret()
+      })
+
         
     }
     update (time, delta) {
