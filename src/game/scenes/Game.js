@@ -84,7 +84,7 @@ export class Game extends Scene {
         
         this.enemies = this.add.group({
             classType: Enemy,
-            maxSize: 30,
+            maxSize: 1,
             runChildUpdate: true
         })
 
