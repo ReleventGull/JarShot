@@ -20,20 +20,29 @@ export let GameState = {
             name: "Bullet-Speed",
             costMultiplier: 1.5,
             baseCost: 1000,
-            currentLevel: 1,
+            currentLevel: 5,
             maxLevel: 6,
+            baseSpeed: 300
         },
         BulletDamage: {
             name: "Bullet-Damage",
             costMultiplier: 1.5,
             baseCost: 1000,
-            currentLevel: 1,
+            currentLevel: 2,
             maxLevel: 6,
+            baseDamage: 10
         },
         Turrets: {
             name: "Turrets",
             costMultiplier: 1.5,
             baseCost: 3000,
+            currentLevel: 2,
+            maxLevel: 6,
+        },
+        TurretBulletSpeed: {
+            name: "Turrets",
+            costMultiplier: 1.5,
+            baseCost: 4000,
             currentLevel: 2,
             maxLevel: 6,
         },
