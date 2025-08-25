@@ -1,16 +1,17 @@
-import { Game } from "phaser";
 import { GameState } from "./gamestate";
 export default class Bullet extends Phaser.GameObjects.Image {
-            constructor(scene) {
+            constructor(scene, speedLevel, baseSpeed, damageLevel, baseDamage) { // uses speed level and baseSpeed from game state on the get method for the group for reusability
+                console.log(speedLevel, baseSpeed, damageLevel, baseDamage)
                 super(scene, 0, 0, "bullet"); //super refers to parent class which is Phaser.GameObject.Image
                 this.incX = 0; //How many incremnetal steps to use 
                 this.incY = 0;
                 this.lifespan = 0;
-                this.speed = Phaser.Math.GetSpeed((GameState.upgrades.BulletSpeed.currentLevel * 150 * 2), 1)
-                this.damage = 10 * GameState.upgrades.BulletDamage.currentLevel
+                this.speed = Phaser.Math.GetSpeed(speedLevel * baseSpeed, 1)
+                this.damage = baseDamage * damageLevel
             }
             
             fire(pointerX, pointerY, playerX, playerY) {
+                console.log("SPEED HERE", this.speed)
                 this.setActive(true)
                 this.setVisible(true)
                 this.setPosition(playerX, playerY)

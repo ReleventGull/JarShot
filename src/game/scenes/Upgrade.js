@@ -27,9 +27,9 @@ export class Upgrades extends Scene
         for(let item in GameState.upgrades){
             let currentUpgrade = GameState.upgrades[item]
             let currentNameBox = this.add.text(200, 200 + this.incForRows, item).setOrigin(0, .5)
-            currentNameBox.width = 200
+            currentNameBox.width = 300
             upgradeDots[item] = []
-            let inc = 40
+            let inc = 90 //Space between upgrade name and upgrade dots
             for(let i = 1; i < GameState.upgrades[item].maxLevel; i++) {
                 upgradeDots[item].push(this.add.rectangle(currentNameBox.x + inc + 100, currentNameBox.y, 20, 12, currentUpgrade.currentLevel > i   ? 0x99999 : 0x999999).setOrigin(0,.5))
                 inc += 40
