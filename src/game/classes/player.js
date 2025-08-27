@@ -11,7 +11,7 @@ export default class Player extends Phaser.GameObjects.Image {
         this.setActive(true)
         this.setVisible(true)
         this.setPosition(300, 400)
-        this.speed = Phaser.Math.GetSpeed(250, 1)
+        this.speed = Phaser.Math.GetSpeed(350, 1)
         this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.sKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);

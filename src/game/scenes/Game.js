@@ -82,8 +82,6 @@ export class Game extends Scene {
             for(let enemy of this.enemies.children.entries) {
                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
                 if(checkCollide) {
-                    bullet.destroy()
-                    console.log(bullet.damage)
                     enemy.hp.updateHealth(bullet.damage) 
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
@@ -97,6 +95,69 @@ export class Game extends Scene {
                 break;
             }
         }   
+    }
+
+    checkPlayerBulletCollision() {
+        for(let bullet of this.bullets.children.entries) {
+            let checkCollide
+            for(let enemy of this.enemies.children.entries) {
+                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
+
+                if(checkCollide && !enemy.isHit) {
+                    enemy.isHit = 100
+                    checkCollide = false
+                    enemy.hp.updateHealth(bullet.damage)
+                    bullet.destroy()
+                    if(enemy.hp.currentValue <= 0) {
+                        enemy.hp.destroy()
+                        enemy.destroy()
+                        GameState.playerCash += enemy.cashPerKill
+                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                    }
+                    break
+                }
+            }
+            //Checks if bull is inactive to prevent unnecessary loops
+            if(!bullet.active) {
+                break
+            }
+            for(let chaseEnemy of this.chaseEnemies.children.entries) {
+                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), chaseEnemy.getBounds())
+                if(checkCollide && !chaseEnemy.isHit) {
+                    chaseEnemy.isHit = 100
+                    checkCollide = false
+                    chaseEnemy.hp.updateHealth(bullet.damage)
+                    bullet.destroy()
+                    if(chaseEnemy.hp.currentValue <= 0) {
+                        chaseEnemy.hp.destroy()
+                        chaseEnemy.destroy()
+                        GameState.playerCash += chaseEnemy.cashPerKill
+                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                    }
+                    break;
+                }
+            }
+             //Checks if bull is inactive to prevent unnecessary loops
+            if(!bullet.active) {
+                break
+            }
+            for(let tankEnemy of this.tankEnemies.children.entries) {
+                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), tankEnemy.getBounds())
+                if(checkCollide && !tankEnemy.isHit) {
+                    tankEnemy.isHit = 100
+                    checkCollide = false
+                    tankEnemy.hp.updateHealth(bullet.damage)
+                    bullet.destroy()
+                    if(tankEnemy.hp.currentValue <= 0) {
+                        tankEnemy.hp.destroy()
+                        tankEnemy.destroy()
+                        GameState.playerCash += tankEnemy.cashPerKill
+                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                    }
+                    break;
+                }
+            }
+        }
     }
 
     create () {
@@ -135,7 +196,7 @@ export class Game extends Scene {
 
         })
         //sets the elapsed time back to 0
-        this.elapsedTime = 0
+        this.elapsedTime = 20000
         //Sets how long the enemies cooldown will be when they attack the player
         this.isOnPlayerCooldown = 300
         this.player = new Player(this)
@@ -276,78 +337,13 @@ export class Game extends Scene {
             }
         }
     }
-        //this loop for detecting bullet collision with regular enemy
-        for(let j = 0; j < this.bullets.children.entries.length; j++) {
-                let bul = this.bullets.children.entries[j]
-                let checkCollide;
-            for(let i = 0; i < this.enemies.children.entries.length; i++) {
-                let ene = this.enemies.children.entries[i]
-                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bul.getBounds(), ene.getBounds())
-                if(checkCollide && !ene.isHit) {
-                    ene.isHit = 100
-                    checkCollide = false
-                    ene.hp.updateHealth(bul.damage)
-                    bul.destroy()
-                    if(ene.hp.currentValue <= 0) {
-                        ene.hp.destroy()
-                        ene.destroy()
-                        GameState.playerCash += ene.cashPerKill
-                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
-                        break;
-                    }
-                }
-            }
-            if (checkCollide) break;
-        }
 
-        //For detecting BULLET collision with chase enemy
-        for(let j = 0; j < this.bullets.children.entries.length; j++) {
-                let bul = this.bullets.children.entries[j]
-                let checkCollide;
-            for(let i = 0; i < this.chaseEnemies.children.entries.length; i++) {
-                let ene = this.chaseEnemies.children.entries[i]
-                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bul.getBounds(), ene.getBounds())
-                if(checkCollide && !ene.isHit) {
-                    ene.isHit = 100
-                    checkCollide = false
-                    ene.hp.updateHealth(bul.damage)
-                    bul.destroy()
-                    if(ene.hp.currentValue <= 0) {
-                        ene.hp.destroy()
-                        ene.destroy()
-                        GameState.playerCash += ene.cashPerKill
-                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
-                        break;
-                    }
-                }
-            }
-            if (checkCollide) break;
-        }
-        //For detecting bullet collision with tank Enemies
-        for(let j = 0; j < this.bullets.children.entries.length; j++) {
-                let bul = this.bullets.children.entries[j]
-                let checkCollide;
-            for(let i = 0; i < this.tankEnemies.children.entries.length; i++) {
-                let ene = this.tankEnemies.children.entries[i]
-                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bul.getBounds(), ene.getBounds())
-                if(checkCollide && !ene.isHit) {
-                    ene.isHit = 100
-                    checkCollide = false
-                    ene.hp.updateHealth(bul.damage)
-                    bul.destroy()
-                    if(ene.hp.currentValue <= 0) {
-                        ene.hp.destroy()
-                        ene.destroy()
-                        GameState.playerCash += ene.cashPerKill
-                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
-                        break;
-                    }
-                }
-            }
-            if (checkCollide) break;
-        }
+
+
+
 
         this.checkTurretBulletCollision()
+        this.checkPlayerBulletCollision()
         //determine enemy spawning
         if(this.countDownUntilEnemySpawn <= 0) {
             this.determineEnemySpawn()
