@@ -7,12 +7,10 @@ export default class Bullet extends Phaser.GameObjects.Image {
                 this.incY = 0;
                 this.lifespan = 0;
                 this.speed = Phaser.Math.GetSpeed(speedLevel * baseSpeed, 1)
-                console.log("FIRED", scene, speedLevel, baseSpeed)
                 this.damage = baseDamage * damageLevel
             }
             
             fire(targetX, targetY, startingPointx, startingPointY) {
-
                 this.setActive(true)
                 this.setVisible(true)
                 this.setPosition(startingPointx, startingPointY)

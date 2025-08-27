@@ -15,7 +15,10 @@ export class Game extends Scene {
 
     countDownUntilEnemySpawn = 500
     elapsedTime = 0
-
+    
+    updateCashText() {
+        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+    }
     updatePlayerRotation(pX, pY) {
         const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, pX, pY)
         this.player.setRotation(angle);
@@ -69,8 +72,31 @@ export class Game extends Scene {
             }
         }
     }
-
         this.countDownUntilEnemySpawn = 200
+    }
+
+    checkTurretBulletCollision() {  
+        for(let i = 0; i < this.turretBullets.children.entries.length; i++) {
+            let bullet = this.turretBullets.children.entries[i]
+            let checkCollide;
+            for(let enemy of this.enemies.children.entries) {
+                checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
+                if(checkCollide) {
+                    bullet.destroy()
+                    console.log(bullet.damage)
+                    enemy.hp.updateHealth(bullet.damage) 
+                    if(enemy.hp.currentValue <= 0 ) {
+                        GameState.playerCash += enemy.cashPerKill
+                        this.updateCashText()
+                        enemy.hp.destroy()
+                        enemy.destroy()
+                    }
+                }
+            }
+            if(checkCollide) {
+                break;
+            }
+        }   
     }
 
     create () {
@@ -320,6 +346,8 @@ export class Game extends Scene {
             }
             if (checkCollide) break;
         }
+
+        this.checkTurretBulletCollision()
         //determine enemy spawning
         if(this.countDownUntilEnemySpawn <= 0) {
             this.determineEnemySpawn()
