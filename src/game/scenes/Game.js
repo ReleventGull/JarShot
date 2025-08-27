@@ -16,8 +16,9 @@ export class Game extends Scene {
     countDownUntilEnemySpawn = 500
     elapsedTime = 0
     
-    updateCashText() {
+    updateCash() {
         this.cashText.setText(`Cash: ${GameState.playerCash}`)
+        localStorage.setItem(`jarShotPlayerCash`, GameState.playerCash)
     }
     updatePlayerRotation(pX, pY) {
         const angle = Phaser.Math.Angle.Between(this.player.x, this.player.y, pX, pY)
@@ -35,7 +36,6 @@ export class Game extends Scene {
         if(turret) {
             turret.spawnTurret()
         }
-
     }
 
     determineEnemySpawn() {
@@ -85,7 +85,7 @@ export class Game extends Scene {
                     enemy.hp.updateHealth(bullet.damage) 
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
-                        this.updateCashText()
+                        this.updateCash()
                         enemy.hp.destroy()
                         enemy.destroy()
                     }
@@ -112,7 +112,7 @@ export class Game extends Scene {
                         enemy.hp.destroy()
                         enemy.destroy()
                         GameState.playerCash += enemy.cashPerKill
-                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                        this.updateCash()
                     }
                     break
                 }
@@ -132,7 +132,7 @@ export class Game extends Scene {
                         chaseEnemy.hp.destroy()
                         chaseEnemy.destroy()
                         GameState.playerCash += chaseEnemy.cashPerKill
-                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                        this.updateCash()
                     }
                     break;
                 }
@@ -152,7 +152,7 @@ export class Game extends Scene {
                         tankEnemy.hp.destroy()
                         tankEnemy.destroy()
                         GameState.playerCash += tankEnemy.cashPerKill
-                        this.cashText.setText(`Cash: ${GameState.playerCash}`)
+                        this.updateCash()
                     }
                     break;
                 }

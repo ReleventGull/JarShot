@@ -35,7 +35,7 @@ export class Upgrades extends Scene
                 inc += 40
             }
         //Adds the blue upgrade button for when player wants to purchase upgade
-        let upgradeButton = this.add.rectangle(currentNameBox.x + 340, currentNameBox.y, 30, 30, 0x99999).setOrigin(0,.5)
+        let upgradeButton = this.add.rectangle(currentNameBox.x + 430, currentNameBox.y, 30, 30, 0x99999).setOrigin(0,.5)
         //this code below handles purchases
         upgradeButton.setInteractive()
         upgradeButton.on("pointerup", () => {
@@ -46,11 +46,13 @@ export class Upgrades extends Scene
                     GameState.playerCash -= cost
                     cashDisplay.setText(`Cash: ${GameState.playerCash}`)
                     upgradeCostDisplay[item].setText((currentUpgrade.costMultiplier * (currentUpgrade.currentLevel - 1)) * currentUpgrade.baseCost + currentUpgrade.baseCost) // Updating cost display
+                    //Update the local storage
+                    localStorage.setItem(`jarShot_${item}_level`, currentUpgrade.currentLevel)
+                    localStorage.setItem(`jarShotPlayerCash`, GameState.playerCash )
                     //This loop is for changing the colors of the upgrade buttons after the upgrade are applied
                     for(let i = 0; i < upgradeDots[item].length; i++) {
                         let currentUpgradeDot = upgradeDots[item][i]
                         if(currentUpgrade.currentLevel > i+1) {
-                            console.log("I hit here", currentUpgradeDot);
                             currentUpgradeDot.fillColor = 0x99999
                         }
                     }

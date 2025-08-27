@@ -1,4 +1,5 @@
 import { Scene } from 'phaser';
+import { GameState } from '../classes/gamestate';
 
 export class Preloader extends Scene
 {
@@ -49,6 +50,25 @@ export class Preloader extends Scene
         this.load.image("tankEnemy", "tankEnemy.png")
 
         this.load.image("turret", "turret.png")
+
+        let cash = localStorage.getItem("jarShotPlayerCash");
+        if (!cash) {
+            localStorage.setItem("jarShotPlayerCash", GameState.playerCash);
+            GameState.playerCash
+        } else {
+            GameState.playerCash = parseInt(cash);
+        }
+
+        // Load upgrades current levels
+        for (let key in GameState.upgrades) {
+            let storedLevel = localStorage.getItem(`jarShot_${key}_level`);
+            if (!storedLevel) {
+                localStorage.setItem(`jarShot_${key}_level`, GameState.upgrades[key].currentLevel);
+            } else {
+                GameState.upgrades[key].currentLevel = parseInt(storedLevel);
+            }
+        }
+
     }
 
     create ()
