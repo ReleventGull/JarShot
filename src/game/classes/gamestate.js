@@ -1,6 +1,6 @@
 
 export let GameState = {
-    playerCash: 10000,
+    playerCash: 500,
     upgrades: {
         PlayerLives: {
             name: "Player-Lives",
