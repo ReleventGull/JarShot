@@ -15,6 +15,7 @@ export default class EnemyHP extends Phaser.GameObjects.Rectangle {
         this.setOrigin(.5)
     }
     updateHealth(dmg) {
+        console.log("DMG IN ENEMY", dmg, this.currentValue)
         this.currentValue -= dmg
         this.updateHealthBar()
     }
