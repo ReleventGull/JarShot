@@ -11,6 +11,8 @@ export default class Enemy extends Phaser.GameObjects.Image {
     cashPerKill = 100;
     isHit = 0;
     isOnPlayer = 0
+    incX = 0
+    incY = 0
     spawnEnemy() {
         this.setOrigin(0,0)
         this.container = this.scene.add.container(0,0)
@@ -36,6 +38,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
     }
     moveDown(delta) {
         let pixelsToMove = this.speed * delta;
+        this.incY = this.speed
         if(this.container.y + pixelsToMove + this.height >= this.scene.scale.height) {
             this.direction2 = "up"
         }else {
@@ -44,6 +47,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
     }
     moveUp(delta) {
         let pixelsToMove = this.speed * delta;
+        this.incY = -this.speed
         if(this.container.y - pixelsToMove <= 0) {
             this.direction2 = "down"
         }else {
@@ -53,6 +57,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
 
     moveRight (delta) {
         let pixelsToMove = this.speed * delta;
+        this.incX = this.speed
         if(pixelsToMove + this.container.x + this.width >= this.scene.scale.width) {
             this.direction2 = "left"
         }else {
@@ -61,6 +66,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
     }
     moveLeft (delta) {
         let pixelsToMove = this.speed * delta;
+        this.incX = -this.speed
         if(this.container.x - pixelsToMove <= 0) {
             this.direction2 = "right"
         }else {

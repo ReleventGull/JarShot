@@ -48,7 +48,6 @@ export class Game extends Scene {
             }
         }
         const chaseChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 5 ? 50 : elapseMinutes * 10))
-        console.log((elapseMinutes > 5 ? 50 : elapseMinutes * 10));
         if(chaseChance == 0) {
             let chaseEnemy = this.chaseEnemies.get()
             if(chaseEnemy) {
@@ -59,7 +58,6 @@ export class Game extends Scene {
             }
         }
         if (elapseMinutes >= 1) {
-            console.log("Im at a minute");
             const tankChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 10 ? 10 : elapseMinutes))
             if(tankChance == 0) {
                 let tankEnemy = this.tankEnemies.get()
@@ -81,10 +79,14 @@ export class Game extends Scene {
             maxSize: 50,
             runChildUpdate: true
         })
-        
+        this.turretBullets = this.add.group({
+            classType: Bullet,
+            maxSize: 50,
+            runChildUpdate: true
+        })
         this.enemies = this.add.group({
             classType: Enemy,
-            maxSize: 1,
+            maxSize: 30,
             runChildUpdate: true
         })
 
