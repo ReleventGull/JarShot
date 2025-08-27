@@ -24,6 +24,7 @@ export default class Bullet extends Phaser.GameObjects.Image {
             removeBullet() {
                 this.setActive(false);
                 this.setVisible(false);
+                this.destroy()
             }
             
             update (time, delta)
