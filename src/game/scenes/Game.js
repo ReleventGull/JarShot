@@ -225,7 +225,7 @@ export class Game extends Scene {
 
         })
         //sets the elapsed time back to 0
-        this.elapsedTime = 80000
+        this.elapsedTime = 0
         //Sets how long the enemies cooldown will be when they attack the player
         this.isOnPlayerCooldown = 300
         this.player = new Player(this)
