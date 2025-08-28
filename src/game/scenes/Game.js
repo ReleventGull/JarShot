@@ -189,107 +189,8 @@ export class Game extends Scene {
         }
     }
 
-    create () {
-        this.bullets = this.add.group({ //refers to the bullet class up above
-            classType: Bullet,
-            maxSize: 50,
-            runChildUpdate: true
-        })
-        this.turretBullets = this.add.group({
-            classType: Bullet,
-            maxSize: 50,
-            runChildUpdate: true
-        })
-        this.enemies = this.add.group({
-            classType: Enemy,
-            maxSize: 30,
-            runChildUpdate: true
-        })
-
-        this.chaseEnemies = this.add.group({
-            classType: ChaseEnemy,
-            maxSize: 10,
-            runChildUpdate: true
-        })
-
-        this.tankEnemies = this.add.group({
-            classType: TankEnemy,
-            maxSize: 5,
-            runChildUpdate: true
-        })
-
-        this.turrets = this.add.group( {
-            classType: Turret,
-            maxSize: GameState.upgrades.Turrets.currentLevel - 1,
-            runChildUpdate: true
-
-        })
-        //sets the elapsed time back to 0
-        this.elapsedTime = 0
-        //Sets how long the enemies cooldown will be when they attack the player
-        this.isOnPlayerCooldown = 300
-        this.player = new Player(this)
-        this.add.existing(this.player)
-        this.player.spawnPlayer()
-        this.cashText = this.add.text(0, 0, `Cash: ${GameState.playerCash}`)
-        this.playerLives = GameState.upgrades.PlayerLives.currentLevel
-        
-        //Space between each health node
-        this.spaceBetweenNodes = 4
-        //Container holding health nodes
-        this.playerHealthBarContainer = this.add.rectangle(this.player.x, this.player.y + 30, (this.playerLives * 15) + ((this.playerLives - 1) * this.spaceBetweenNodes), 8).setOrigin(.5)
-        //health nodes for displaying health. Height goes off of parent container
-        this.playerHealthNodesList = []
-        for(let i = 0; i < GameState.upgrades.PlayerLives.currentLevel; i++) {
-            let container = this.playerHealthBarContainer;
-            let space = (i) * this.spaceBetweenNodes
-            let xCoord = container.x - (container.width/2) + ((i) * 15)
-            this.playerHealthNodesList.push(this.add.rectangle(xCoord + space, container.y, 15, container.height, 0x93939).setOrigin(0, 0.5))
-        }
-      this.input.keyboard.on("keydown-R", () => {
-        this.spawnTurret()
-      })
-
-        
-    }
-    update (time, delta) {
-        //Tracks total elapsed time passed
-        this.elapsedTime += delta
-        //Updates the player health bar container position to be under player
-        this.playerHealthBarContainer.setPosition(this.player.x, this.player.y + 30)
-        for(let i = 0; i < this.playerHealthNodesList.length; i++) {
-            let container = this.playerHealthBarContainer;
-            let space = (i) * this.spaceBetweenNodes
-            let xCoord = container.x - (container.width/2) + ((i) * 15)
-            this.playerHealthNodesList[i].setPosition(xCoord + space, container.y)
-        }
-
-        //send current delta to player
-        this.player.update(delta)
-        
-        //For spawning bullets
-        if(this.cooldownCount <= 0) {
-            this.isBulletCooldownActive = false
-        }
-        if(this.player.pointer.leftButtonDown() && !this.isBulletCooldownActive) {
-            this.cooldownCount = GameState.upgrades.ReloadSpeed.baseCooldown - (GameState.upgrades.ReloadSpeed.currentLevel * 100) //adjust for reload speed
-            this.isBulletCooldownActive = true
-            
-            let bullet = this.bullets.get(
-                GameState.upgrades.BulletSpeed.currentLevel,
-                GameState.upgrades.BulletSpeed.baseSpeed,
-                GameState.upgrades.BulletDamage.currentLevel,
-                GameState.upgrades.BulletDamage.baseDamage
-                )
-
-            if(bullet) {
-                bullet.fire(this.player.pointer.x, this.player.pointer.y, this.player.x, this.player.y)
-            }
-        }else if(this.isBulletCooldownActive){
-            this.cooldownCount -= delta
-        }
-       
-        //First for loop for detecting player collision with enemy
+    checkCollisionForPlayer() {
+                //First for loop for detecting player collision with enemy
         for(let i = 0; i < this.enemies.children.entries.length; i++) {
             let ene = this.enemies.children.entries[i]
             let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
@@ -360,17 +261,112 @@ export class Game extends Scene {
                         fontSize: "4em"
                     }
                 ).setOrigin(.5)
-                
-                
                 this.scene.pause()
             }
         }
     }
+    }
 
+    create () {
+        this.bullets = this.add.group({ //refers to the bullet class up above
+            classType: Bullet,
+            maxSize: 50,
+            runChildUpdate: true
+        })
+        this.turretBullets = this.add.group({
+            classType: Bullet,
+            maxSize: 50,
+            runChildUpdate: true
+        })
+        this.enemies = this.add.group({
+            classType: Enemy,
+            maxSize: 30,
+            runChildUpdate: true
+        })
 
+        this.chaseEnemies = this.add.group({
+            classType: ChaseEnemy,
+            maxSize: 10,
+            runChildUpdate: true
+        })
 
+        this.tankEnemies = this.add.group({
+            classType: TankEnemy,
+            maxSize: 5,
+            runChildUpdate: true
+        })
 
+        this.turrets = this.add.group( {
+            classType: Turret,
+            maxSize: GameState.upgrades.Turrets.currentLevel - 1,
+            runChildUpdate: true
 
+        })
+        //sets the elapsed time back to 0
+        this.elapsedTime = 0
+        //Sets how long the enemies cooldown will be when they attack the player
+        this.isOnPlayerCooldown = 300
+        this.player = new Player(this)
+        this.add.existing(this.player)
+        this.player.spawnPlayer()
+        this.cashText = this.add.text(0, 0, `Cash: ${GameState.playerCash}`)
+        this.playerLives = GameState.upgrades.PlayerLives.currentLevel
+        
+        //Space between each health node
+        this.spaceBetweenNodes = 4
+        //Container holding health nodes
+        this.playerHealthBarContainer = this.add.rectangle(this.player.x, this.player.y + 30, (this.playerLives * 15) + ((this.playerLives - 1) * this.spaceBetweenNodes), 8).setOrigin(.5)
+        //health nodes for displaying health. Height goes off of parent container
+        this.playerHealthNodesList = []
+        for(let i = 0; i < GameState.upgrades.PlayerLives.currentLevel; i++) {
+            let container = this.playerHealthBarContainer;
+            let space = (i) * this.spaceBetweenNodes
+            let xCoord = container.x - (container.width/2) + ((i) * 15)
+            this.playerHealthNodesList.push(this.add.rectangle(xCoord + space, container.y, 15, container.height, 0x93939).setOrigin(0, 0.5))
+        }
+      this.input.keyboard.on("keydown-R", () => {
+        this.spawnTurret()
+      })
+    }
+    
+    update (time, delta) {
+        //Tracks total elapsed time passed
+        this.elapsedTime += delta
+        //Updates the player health bar container position to be under player
+        this.playerHealthBarContainer.setPosition(this.player.x, this.player.y + 30)
+        for(let i = 0; i < this.playerHealthNodesList.length; i++) {
+            let container = this.playerHealthBarContainer;
+            let space = (i) * this.spaceBetweenNodes
+            let xCoord = container.x - (container.width/2) + ((i) * 15)
+            this.playerHealthNodesList[i].setPosition(xCoord + space, container.y)
+        }
+
+        //send current delta to player
+        this.player.update(delta)
+        
+        //For spawning bullets
+        if(this.cooldownCount <= 0) {
+            this.isBulletCooldownActive = false
+        }
+        if(this.player.pointer.leftButtonDown() && !this.isBulletCooldownActive) {
+            this.cooldownCount = GameState.upgrades.ReloadSpeed.baseCooldown - (GameState.upgrades.ReloadSpeed.currentLevel * 100) //adjust for reload speed
+            this.isBulletCooldownActive = true
+            
+            let bullet = this.bullets.get(
+                GameState.upgrades.BulletSpeed.currentLevel,
+                GameState.upgrades.BulletSpeed.baseSpeed,
+                GameState.upgrades.BulletDamage.currentLevel,
+                GameState.upgrades.BulletDamage.baseDamage
+                )
+
+            if(bullet) {
+                bullet.fire(this.player.pointer.x, this.player.pointer.y, this.player.x, this.player.y)
+            }
+        }else if(this.isBulletCooldownActive){
+            this.cooldownCount -= delta
+        }
+       
+        this.checkCollisionForPlayer()
         this.checkTurretBulletCollision()
         this.checkPlayerBulletCollision()
         //determine enemy spawning
