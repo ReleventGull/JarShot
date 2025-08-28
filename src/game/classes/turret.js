@@ -30,8 +30,8 @@ export class Turret extends Phaser.GameObjects.Image {
         let t1 = (-B + Math.sqrt(discriminant)) / (2 * A);
         let t2 = (-B - Math.sqrt(discriminant)) / (2 * A);
 
-        let t;
-
+        let t;  
+        
         if (t1 > 0 && t2 > 0) {
             t = Math.min(t1, t2);
         } else if (t1 > 0) {
@@ -51,9 +51,10 @@ export class Turret extends Phaser.GameObjects.Image {
     searchForEnemy() {
         let shortestDistance = 10000000
         let chosenEnemy;
-        for(let i = 0; i < this.scene.enemies.children.entries.length; i++) {
-            let currentEnemy = this.scene.enemies.children.entries[i]
-            let distance = Phaser.Math.Distance.Between(this.x, this.y, currentEnemy.x, currentEnemy.y)
+        let enemies = [...this.scene.enemies.children.entries, ...this.scene.chaseEnemies.children.entries, ...this.scene.tankEnemies.children.entries]
+        for(let i = 0; i < enemies.length; i++) {
+            let currentEnemy = enemies[i]
+            let distance = Phaser.Math.Distance.Between(this.x, this.y, currentEnemy.container.x, currentEnemy.container.y)
             if(shortestDistance > distance) {
                 chosenEnemy = currentEnemy
             }

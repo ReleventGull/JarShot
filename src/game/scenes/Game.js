@@ -91,8 +91,37 @@ export class Game extends Scene {
                     }
                 }
             }
-            if(checkCollide) {
-                break;
+            if(!bullet.active) {
+                continue
+            }
+            for(let enemy of this.chaseEnemies.children.entries) {
+                checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
+                if(checkCollide) {
+                    bullet.destroy()
+                    enemy.hp.updateHealth(bullet.damage) 
+                    if(enemy.hp.currentValue <= 0 ) {
+                        GameState.playerCash += enemy.cashPerKill
+                        this.updateCash()
+                        enemy.hp.destroy()
+                        enemy.destroy()
+                    }
+                }
+            }
+            if(!bullet.active) {
+                continue
+            }
+            for(let enemy of this.tankEnemies.children.entries) {
+                checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
+                if(checkCollide) {
+                    bullet.destroy()
+                    enemy.hp.updateHealth(bullet.damage) 
+                    if(enemy.hp.currentValue <= 0 ) {
+                        GameState.playerCash += enemy.cashPerKill
+                        this.updateCash()
+                        enemy.hp.destroy()
+                        enemy.destroy()
+                    }
+                }
             }
         }   
     }
@@ -119,7 +148,7 @@ export class Game extends Scene {
             }
             //Checks if bull is inactive to prevent unnecessary loops
             if(!bullet.active) {
-                break
+                continue
             }
             for(let chaseEnemy of this.chaseEnemies.children.entries) {
                  checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), chaseEnemy.getBounds())
@@ -139,7 +168,7 @@ export class Game extends Scene {
             }
              //Checks if bull is inactive to prevent unnecessary loops
             if(!bullet.active) {
-                break
+                continue
             }
             for(let tankEnemy of this.tankEnemies.children.entries) {
                  checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), tankEnemy.getBounds())
@@ -196,7 +225,7 @@ export class Game extends Scene {
 
         })
         //sets the elapsed time back to 0
-        this.elapsedTime = 20000
+        this.elapsedTime = 80000
         //Sets how long the enemies cooldown will be when they attack the player
         this.isOnPlayerCooldown = 300
         this.player = new Player(this)
