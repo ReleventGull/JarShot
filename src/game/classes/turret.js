@@ -7,7 +7,7 @@ export class Turret extends Phaser.GameObjects.Image {
     }
     lookingForEnemy = false
     targetedEnemy
-    bulletCooldown = 0
+    reloadCooldown = 0
     spawnTurret() {
         this.setPosition(this.scene.player.x, this.scene.player.y)
         this.setActive(true)
@@ -70,10 +70,10 @@ export class Turret extends Phaser.GameObjects.Image {
         this.y_hit = null
     }
     update(time, delta) {
-        if (this.bulletCooldown > 0) {
-            this.bulletCooldown -= delta
-            if(this.bulletCooldown <= 0) {
-                    this.bulletCooldown = 0
+        if (this.reloadCooldown > 0) {
+            this.reloadCooldown -= delta
+            if(this.reloadCooldown <= 0) {
+                    this.reloadCooldown = 0
                 }
             }
         if(!this.lookingForEnemy && this.targetedEnemy == null) {
@@ -83,9 +83,10 @@ export class Turret extends Phaser.GameObjects.Image {
             if(this.targetedEnemy) {
                 if (this.targetedEnemy.active) {
                     this.trackEnemy(delta)
-                    let bullet = this.scene.turretBullets.get(GameState.upgrades.TurretBulletSpeed.currentLevel, GameState.upgrades.TurretBulletSpeed.baseSpeed, GameState.upgrades.BulletDamage.currentLevel, GameState.upgrades.BulletDamage.baseDamage)
-                    if(bullet && this.bulletCooldown == 0) {
-                        this.bulletCooldown = 1000
+                    let bullet = this.scene.turretBullets.get(GameState.upgrades.TurretBulletSpeed.currentLevel, GameState.upgrades.TurretBulletSpeed.baseSpeed, GameState.upgrades.TurretBulletDamage.currentLevel, GameState.upgrades.TurretBulletDamage.baseDamage)
+                    if(bullet && this.reloadCooldown == 0) {
+                        this.reloadCooldown = 1100 - (GameState.upgrades.TurretReloadSpeed.currentLevel * 120)
+                        
                         bullet.fire(this.x_hit, this.y_hit, this.x, this.y)
                     }
                 }else {
