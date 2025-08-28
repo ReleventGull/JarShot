@@ -76,12 +76,12 @@ export class Game extends Scene {
     }
 
     checkTurretBulletCollision() {  
-        for(let i = 0; i < this.turretBullets.children.entries.length; i++) {
-            let bullet = this.turretBullets.children.entries[i]
+        for(let bullet of this.turretBullets.children.entries) {
             let checkCollide;
             for(let enemy of this.enemies.children.entries) {
                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
                 if(checkCollide) {
+                    bullet.destroy()
                     enemy.hp.updateHealth(bullet.damage) 
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
