@@ -52,9 +52,9 @@ export default class TankEnemy extends Phaser.GameObjects.Image {
             } 
         }
         let angle = Phaser.Math.Angle.Between(this.container.x, this.container.y, this.scene.player.x, this.scene.player.y)
-        let xInc = Math.cos(angle)
-        let yInc = Math.sin(angle)
-        this.container.x += xInc * (this.speed * delta)
-        this.container.y += yInc * (this.speed * delta)
+        this.incX = Math.cos(angle) * this.speed
+        this.incY = Math.sin(angle) * this.speed
+        this.container.x += this.incX *  delta
+        this.container.y += this.incY *  delta
     }
 }
