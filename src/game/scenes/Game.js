@@ -4,6 +4,7 @@ import Enemy from '../classes/enemy'
 import ChaseEnemy from '../classes/chaseEnemy';
 import Bullet from  '../classes/bullet'
 import Player from '../classes/player'
+import { RotateEnemy } from '../classes/rotate';
 import EnemyHP from '../classes/enemyhp';
 import { Turret } from '../classes/turret';
 import { GameState } from '../classes/gamestate'
@@ -39,6 +40,16 @@ export class Game extends Scene {
     }
 
     determineEnemySpawn() {
+        const rotateChance = Phaser.Math.Between(0, 5)
+        if(rotateChance == 0) {
+            let rotateEnemy = this.rotateEnemies.get()
+            if(rotateEnemy) {
+                let enemyHpClass = new EnemyHP(this, 30)
+                this.add.existing(enemyHpClass)
+                rotateEnemy.hp = enemyHpClass
+                rotateEnemy.spawnEnemy()
+            }
+        }
         let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
         const basicChance = Phaser.Math.Between(0, (10 - (elapseMinutes > 10 ? 10 : elapseMinutes)))
         if(basicChance == 0) {
@@ -123,6 +134,7 @@ export class Game extends Scene {
                     }
                 }
             }
+            
         }   
     }
 
@@ -171,6 +183,25 @@ export class Game extends Scene {
                 continue
             }
             for(let tankEnemy of this.tankEnemies.children.entries) {
+                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), tankEnemy.getBounds())
+                if(checkCollide && !tankEnemy.isHit) {
+                    tankEnemy.isHit = 100
+                    checkCollide = false
+                    tankEnemy.hp.updateHealth(bullet.damage)
+                    bullet.destroy()
+                    if(tankEnemy.hp.currentValue <= 0) {
+                        tankEnemy.hp.destroy()
+                        tankEnemy.destroy()
+                        GameState.playerCash += tankEnemy.cashPerKill
+                        this.updateCash()
+                    }
+                    break;
+                }
+            }
+            if(!bullet.active) {
+                continue
+            }
+            for(let tankEnemy of this.rotateEnemies.children.entries) {
                  checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), tankEnemy.getBounds())
                 if(checkCollide && !tankEnemy.isHit) {
                     tankEnemy.isHit = 100
@@ -265,7 +296,30 @@ export class Game extends Scene {
             }
         }
     }
+        for(let i = 0; i < this.rotateEnemies.children.entries.length; i++) {
+            let ene = this.rotateEnemies.children.entries[i]
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            if (checkCollide && ene.isOnPlayer == 0 ) {
+                this.playerLives -= 1
+                this.player.dimPlayer()
+                this.updatePlayerHealthBarOnDamage()
+                //the length of cooldown when an enemy hits the player before it can register another hit
+                ene.isOnPlayer = this.isOnPlayerCooldown 
+                if(this.playerLives <= 0) {
+                setTimeout(() => {
+                    this.scene.start("MainMenu")
+                    }, 3000)
+                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+                    {
+                        color: "red",
+                        fontSize: "4em"
+                    }
+                ).setOrigin(.5)
+                this.scene.pause()
+            }
+        }
     }
+}
 
     create () {
         this.bullets = this.add.group({ //refers to the bullet class up above
@@ -300,7 +354,12 @@ export class Game extends Scene {
             classType: Turret,
             maxSize: GameState.upgrades.Turrets.currentLevel - 1,
             runChildUpdate: true
+        })
 
+        this.rotateEnemies = this.add.group({
+            classType: RotateEnemy,
+            maxSize: 1,
+            runChildUpdate: true
         })
         //sets the elapsed time back to 0
         this.elapsedTime = 0
