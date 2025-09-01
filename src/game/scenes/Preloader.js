@@ -70,6 +70,15 @@ export class Preloader extends Scene
                 GameState.upgrades[key].currentLevel = parseInt(storedLevel);
             }
         }
+        //Load Colors
+        for (let key in GameState.colors) {
+            let current = localStorage.getItem(`jarShot_${key}`)
+            if(current) {
+                GameState.colors[key] = localStorage.getItem(`jarShot_${key}`)
+            }else {
+                localStorage.setItem(`jarShot_${key}`, GameState.colors[key])
+            }
+        }
 
     }
 
@@ -81,6 +90,6 @@ export class Preloader extends Scene
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
 
         
-        this.scene.start('MainMenu');
+        this.scene.start('Customize');
     }
 }
