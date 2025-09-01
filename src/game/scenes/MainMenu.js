@@ -22,9 +22,17 @@ export class MainMenu extends Scene
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
-
+        
+        this.customizeButton = this.add.text(512, 500, 'Customize', {
+            fontFamily: 'Arial Black', fontSize: 50, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        }).setOrigin(0.5);
+        
+        this.customizeButton.setInteractive()
         this.playButton.setInteractive()
         this.upgradeButton.setInteractive()
+        
         this.playButton.on("pointerup", () => {
             console.log("Starting game...")
             this.scene.start('Game');
@@ -32,6 +40,8 @@ export class MainMenu extends Scene
         this.upgradeButton.on('pointerup', () => {
             this.scene.start("Upgrades")
         })
-
+        this.customizeButton.on("pointerup", () => {
+            this.scene.start("Customize")
+        })
     }
 }

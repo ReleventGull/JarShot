@@ -1,6 +1,12 @@
 
 export let GameState = {
     playerCash: 500,
+    colors: {
+        playerBodyColor: '0x000000',
+        playerBarrelColor: '0xFFFFFF',
+        turretBodyColor: '0x000000',
+        turretBarrelColor: '0xFFFFFF'
+    },
     upgrades: {
         PlayerLives: {
             name: "Player-Lives",
