@@ -1,7 +1,8 @@
+import { GameState } from "./gamestate";
 
-export default class Player extends Phaser.GameObjects.Image {
+export default class Player extends Phaser.GameObjects.Container {
     constructor (scene) {
-        super(scene, 0, 0, "player")
+        super(scene, scene.scale.width/2, scene.scale.height/2)
         this.scene = scene
     }
     pointer;
@@ -10,8 +11,13 @@ export default class Player extends Phaser.GameObjects.Image {
     spawnPlayer() {
         this.setActive(true)
         this.setVisible(true)
-        this.setPosition(300, 400)
         this.speed = Phaser.Math.GetSpeed(305, 1)
+    
+        this.body = this.scene.add.circle(0, 0, 16, GameState.colors.playerBodyColor).setOrigin(.5)
+        this.turret = this.scene.add.rectangle(this.body.width/2 , 0, 15, 5, GameState.colors.playerBarrelColor).setOrigin(1, .5)
+        this.add(this.body)
+        this.add(this.turret)
+        
         this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
         this.sKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
@@ -24,7 +30,7 @@ export default class Player extends Phaser.GameObjects.Image {
     }
 
     dimPlayer () {
-        this.setTint(0xFF0000)
+        //this.body.setTint(0xFF0000)
         this.dimCooldown = 200
     }
 

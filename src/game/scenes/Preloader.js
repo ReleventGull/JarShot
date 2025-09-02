@@ -37,8 +37,6 @@ export class Preloader extends Scene
 
         this.load.image("bullet", "bullet.png")
 
-        this.load.image("player", "player.png")
-
         this.load.image("enemy", "enemy.png")
 
         this.load.image("play", "playbutton.png")
@@ -90,6 +88,6 @@ export class Preloader extends Scene
         //  Move to the MainMenu. You could also swap this for a Scene Transition, such as a camera fade.
 
         
-        this.scene.start('Customize');
+        this.scene.start('MainMenu');
     }
 }
