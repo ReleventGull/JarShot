@@ -411,15 +411,19 @@ export class Game extends Scene {
         if(this.player.pointer.leftButtonDown() && !this.isBulletCooldownActive) {
             this.cooldownCount = GameState.upgrades.ReloadSpeed.baseCooldown - (GameState.upgrades.ReloadSpeed.currentLevel * 100) //adjust for reload speed
             this.isBulletCooldownActive = true
+ 
             
-            let bullet = this.bullets.get(
-                GameState.upgrades.BulletSpeed.currentLevel,
-                GameState.upgrades.BulletSpeed.baseSpeed,
-                GameState.upgrades.BulletDamage.currentLevel,
-                GameState.upgrades.BulletDamage.baseDamage
-                )
+                let bullet = this.bullets.get()
+     
 
             if(bullet) {
+                 bullet.init({
+                    bulletSpeed: GameState.upgrades.BulletSpeed.baseSpeed,
+                    bulletSpeedLevel: GameState.upgrades.BulletSpeed.currentLevel,
+                    multiplier: GameState.upgrades.BulletSpeed.multiplier,
+                    bulletDamage: GameState.upgrades.BulletDamage.baseDamage,
+                    bulletDamageLevel: GameState.upgrades.BulletDamage.currentLevel
+                })
                 bullet.fire(this.player.pointer.x, this.player.pointer.y, this.player.x, this.player.y)
             }
         }else if(this.isBulletCooldownActive){
