@@ -29,7 +29,7 @@ export let GameState = {
             baseCost: 1000,
             currentLevel: 1,
             maxLevel: 6,
-            baseSpeed: 300
+            baseSpeed: 320
         },
         BulletDamage: {
             name: "Bullet-Damage",

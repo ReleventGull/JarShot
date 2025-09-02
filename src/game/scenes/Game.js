@@ -40,7 +40,7 @@ export class Game extends Scene {
     }
 
     determineEnemySpawn() {
-        const rotateChance = Phaser.Math.Between(0, 5)
+        const rotateChance = Phaser.Math.Between(0, 8)
         if(rotateChance == 0) {
             let rotateEnemy = this.rotateEnemies.get()
             if(rotateEnemy) {
@@ -222,9 +222,10 @@ export class Game extends Scene {
 
     checkCollisionForPlayer() {
                 //First for loop for detecting player collision with enemy
+                
         for(let i = 0; i < this.enemies.children.entries.length; i++) {
             let ene = this.enemies.children.entries[i]
-            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.body.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
                 this.player.dimPlayer()
@@ -251,7 +252,7 @@ export class Game extends Scene {
         //Seonc for loop for detecting player collision with chase enemy
         for(let i = 0; i < this.chaseEnemies.children.entries.length; i++) {
             let ene = this.chaseEnemies.children.entries[i]
-            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.body.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
                 this.player.dimPlayer()
@@ -275,7 +276,7 @@ export class Game extends Scene {
         //for detecting player collision with the tank enemies
         for(let i = 0; i < this.tankEnemies.children.entries.length; i++) {
             let ene = this.tankEnemies.children.entries[i]
-            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.body.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
                 this.player.dimPlayer()
@@ -298,7 +299,7 @@ export class Game extends Scene {
     }
         for(let i = 0; i < this.rotateEnemies.children.entries.length; i++) {
             let ene = this.rotateEnemies.children.entries[i]
-            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.getBounds(), ene.getBounds())
+            let checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(this.player.body.getBounds(), ene.getBounds())
             if (checkCollide && ene.isOnPlayer == 0 ) {
                 this.playerLives -= 1
                 this.player.dimPlayer()
