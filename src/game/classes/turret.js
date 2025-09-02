@@ -21,7 +21,7 @@ export class Turret extends Phaser.GameObjects.Image {
         let rY = enemy.container.y - this.y
         let enemyX = enemy.incX
         let enemyY = enemy.incY;   
-        let bulletSpeed = Phaser.Math.GetSpeed(GameState.upgrades.TurretBulletSpeed.baseSpeed * GameState.upgrades.TurretBulletSpeed.currentLevel, 1)
+        let bulletSpeed = Phaser.Math.GetSpeed(GameState.upgrades.TurretBulletSpeed.baseSpeed * (GameState.upgrades.TurretBulletSpeed.multiplier * GameState.upgrades.TurretBulletSpeed.currentLevel), 1)
 
         let A = (enemyX)**2 + (enemyY)**2 - bulletSpeed**2
         let B = 2 * ((rX * (enemyX)) + (rY * (enemyY)))
@@ -83,10 +83,17 @@ export class Turret extends Phaser.GameObjects.Image {
             if(this.targetedEnemy) {
                 if (this.targetedEnemy.active) {
                     this.trackEnemy(delta)
-                    let bullet = this.scene.turretBullets.get(GameState.upgrades.TurretBulletSpeed.currentLevel, GameState.upgrades.TurretBulletSpeed.baseSpeed, GameState.upgrades.TurretBulletDamage.currentLevel, GameState.upgrades.TurretBulletDamage.baseDamage)
+                    let bullet = this.scene.turretBullets.get()
                     if(bullet && this.reloadCooldown == 0) {
                         this.reloadCooldown = 1100 - (GameState.upgrades.TurretReloadSpeed.currentLevel * 120)
-                        
+                            bullet.init({
+                                bulletSpeed: GameState.upgrades.TurretBulletSpeed.baseSpeed,
+                                bulletSpeedLevel: GameState.upgrades.TurretBulletSpeed.currentLevel,
+                                multiplier: GameState.upgrades.TurretBulletSpeed.multiplier,
+                                bulletDamage: GameState.upgrades.TurretBulletDamage.baseDamage,
+                                bulletDamageLevel: GameState.upgrades.TurretBulletDamage.currentLevel
+                            })
+                       
                         bullet.fire(this.x_hit, this.y_hit, this.x, this.y)
                     }
                 }else {
