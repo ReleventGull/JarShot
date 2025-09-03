@@ -14,9 +14,10 @@ export default class Player extends Phaser.GameObjects.Container {
         this.speed = Phaser.Math.GetSpeed(305, 1)
     
         this.body = this.scene.add.circle(0, 0, 16, GameState.colors.playerBodyColor).setOrigin(.5)
-        this.turret = this.scene.add.rectangle(this.body.width/2 , 0, 15, 5, GameState.colors.playerBarrelColor).setOrigin(1, .5)
+        
+        this.barrel = this.scene.add.rectangle(this.body.width/2 , 0, 15, 5, GameState.colors.playerBarrelColor).setOrigin(1, .5)
         this.add(this.body)
-        this.add(this.turret)
+        this.add(this.barrel)
         
         this.wKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
         this.aKey = this.scene.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
@@ -31,12 +32,16 @@ export default class Player extends Phaser.GameObjects.Container {
     //Dim function needs rework due to container changes
     dimPlayer () {
         //this.body.setTint(0xFF0000)
+        this.body.setBlendMode(Phaser.BlendModes.ADD)
+        this.barrel.setBlendMode(Phaser.BlendModes.ADD)
         this.dimCooldown = 200
     }
 
     update(delta) {
         if(this.dimCooldown > 0) {
             if(this.dimCooldown - delta <= 0) {
+                this.body.setBlendMode(null)
+                this.barrel.setBlendMode(null)
                 this.dimCooldown = 0
             }else {
                 this.dimCooldown -= delta
