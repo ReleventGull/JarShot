@@ -1,5 +1,5 @@
 import { Scene } from 'phaser';
-import { GameState } from '../classes/gamestate'
+
 export class MainMenu extends Scene
 {
     constructor ()
@@ -28,7 +28,13 @@ export class MainMenu extends Scene
             stroke: '#000000', strokeThickness: 8,
             align: 'center'
         }).setOrigin(0.5);
+        this.controlsButton = this.add.text(512, 600, 'Controls', {
+            fontFamily: 'Arial Black', fontSize: 50, color: '#ffffff',
+            stroke: '#000000', strokeThickness: 8,
+            align: 'center'
+        }).setOrigin(0.5);
         
+        this.controlsButton.setInteractive()
         this.customizeButton.setInteractive()
         this.playButton.setInteractive()
         this.upgradeButton.setInteractive()
@@ -42,6 +48,9 @@ export class MainMenu extends Scene
         })
         this.customizeButton.on("pointerup", () => {
             this.scene.start("Customize")
+        })
+        this.controlsButton.on('pointerup', () => {
+            this.scene.start("Controls")
         })
     }
 }

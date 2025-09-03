@@ -4,6 +4,7 @@ import { Upgrades } from './scenes/Upgrade';
 import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import { Customize } from './scenes/Customize';
+import { Controls } from './scenes/Controls';
 import { AUTO, Game } from 'phaser';
 
 //  Find out more information about the Game Config at:
@@ -27,7 +28,8 @@ const config = {
         MainMenu,
         MainGame,
         Upgrades,
-        Customize
+        Customize,
+        Controls
     ]
 };
 
