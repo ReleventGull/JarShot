@@ -1,14 +1,18 @@
 import { GameState } from "./gamestate"
 
-export class Turret extends Phaser.GameObjects.Image {
+export class Turret extends Phaser.GameObjects.Container {
     constructor(scene) {
-        super(scene, 0, 0, "turret")
+        super(scene, 0, 0)
         this.scene = scene
     }
     lookingForEnemy = false
     targetedEnemy
     reloadCooldown = 0
     spawnTurret() {
+        this.body = this.scene.add.circle(0, 0, 16, GameState.colors.turretBodyColor).setOrigin(.5)
+        this.turret = this.scene.add.rectangle(this.body.width/2 , 0, 15, 5, GameState.colors.turretBarrelColor).setOrigin(1, .5)
+        this.add(this.body)
+        this.add(this.turret)
         this.setPosition(this.scene.player.x, this.scene.player.y)
         this.setActive(true)
         this.setVisible(true)
@@ -46,7 +50,7 @@ export class Turret extends Phaser.GameObjects.Image {
         this.x_hit = enemy.container.x + enemyX * t;
         this.y_hit = enemy.container.y + enemyY * t;
         let angle = Phaser.Math.Angle.Between(this.x, this.y, this.x_hit, this.y_hit)
-        this.setRotation(angle + Math.PI / 2)
+        this.setRotation(angle)
     }
     searchForEnemy() {
         let shortestDistance = 10000000
