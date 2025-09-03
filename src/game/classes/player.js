@@ -28,7 +28,7 @@ export default class Player extends Phaser.GameObjects.Container {
         const angle = Phaser.Math.Angle.Between(this.x, this.y, this.pointer.x, this.pointer.y)
         this.setRotation(angle)
     }
-
+    //Dim function needs rework due to container changes
     dimPlayer () {
         //this.body.setTint(0xFF0000)
         this.dimCooldown = 200
@@ -37,7 +37,6 @@ export default class Player extends Phaser.GameObjects.Container {
     update(delta) {
         if(this.dimCooldown > 0) {
             if(this.dimCooldown - delta <= 0) {
-                this.clearTint()
                 this.dimCooldown = 0
             }else {
                 this.dimCooldown -= delta
