@@ -134,6 +134,22 @@ export class Game extends Scene {
                     }
                 }
             }
+            if(!bullet.active) {
+                continue
+            }
+            for(let enemy of this.rotateEnemies.children.entries) {
+                checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
+                if(checkCollide) {
+                    bullet.destroy()
+                    enemy.hp.updateHealth(bullet.damage) 
+                    if(enemy.hp.currentValue <= 0 ) {
+                        GameState.playerCash += enemy.cashPerKill
+                        this.updateCash()
+                        enemy.hp.destroy()
+                        enemy.destroy()
+                    }
+                }
+            }
             
         }   
     }
