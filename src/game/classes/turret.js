@@ -55,7 +55,7 @@ export class Turret extends Phaser.GameObjects.Container {
     searchForEnemy() {
         let shortestDistance = 10000000
         let chosenEnemy;
-        let enemies = [...this.scene.enemies.children.entries, ...this.scene.chaseEnemies.children.entries, ...this.scene.tankEnemies.children.entries]
+        let enemies = [...this.scene.enemies.children.entries, ...this.scene.chaseEnemies.children.entries, ...this.scene.tankEnemies.children.entries, ...this.scene.rotateEnemies.children.entries]
         for(let i = 0; i < enemies.length; i++) {
             let currentEnemy = enemies[i]
             let distance = Phaser.Math.Distance.Between(this.x, this.y, currentEnemy.container.x, currentEnemy.container.y)
