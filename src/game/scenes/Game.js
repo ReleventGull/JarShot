@@ -16,7 +16,6 @@ export class Game extends Scene {
 
     countDownUntilEnemySpawn = 500
     elapsedTime = 0
-    
     updateCash() {
         this.cashText.setText(`Cash: ${GameState.playerCash}`)
         localStorage.setItem(`jarShotPlayerCash`, GameState.playerCash)
@@ -378,6 +377,9 @@ export class Game extends Scene {
             maxSize: 1,
             runChildUpdate: true
         })
+        //Adds a pause button
+        this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P)
+        
         //sets the elapsed time back to 0
         this.elapsedTime = 0
         //Sets how long the enemies cooldown will be when they attack the player
@@ -406,6 +408,14 @@ export class Game extends Scene {
     }
     
     update (time, delta) {
+        //Pauses Game loading the pause scene
+        if(this.pKey.isDown && !this.isPaused) {
+            this.pauseCooldown == 500
+            this.scene.launch("Pause")
+            this.scene.pause()
+        }
+        
+
         //Tracks total elapsed time passed
         this.elapsedTime += delta
         //Updates the player health bar container position to be under player
