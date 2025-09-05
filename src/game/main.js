@@ -5,6 +5,7 @@ import { MainMenu } from './scenes/MainMenu';
 import { Preloader } from './scenes/Preloader';
 import { Customize } from './scenes/Customize';
 import { Controls } from './scenes/Controls';
+import { Pause } from './scenes/Pause';
 import { AUTO, Game } from 'phaser';
 
 //  Find out more information about the Game Config at:
@@ -29,7 +30,8 @@ const config = {
         MainGame,
         Upgrades,
         Customize,
-        Controls
+        Controls,
+        Pause
     ]
 };
 
