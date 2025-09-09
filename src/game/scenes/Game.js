@@ -8,6 +8,7 @@ import { RotateEnemy } from '../classes/rotate';
 import EnemyHP from '../classes/enemyhp';
 import { Turret } from '../classes/turret';
 import { GameState } from '../classes/gamestate'
+import { BossOne } from '../classes/bossOne';
 export class Game extends Scene {
     constructor ()
     {
@@ -16,6 +17,7 @@ export class Game extends Scene {
 
     countDownUntilEnemySpawn = 500
     elapsedTime = 0
+    currentBoss = null
     updateCash() {
         this.cashText.setText(`Cash: ${GameState.playerCash}`)
         localStorage.setItem(`jarShotPlayerCash`, GameState.playerCash)
@@ -38,52 +40,84 @@ export class Game extends Scene {
         }
     }
 
+    destroyAllEnemies() {
+        for(let enemy of this.enemies.children.entries) {
+            enemy.hp.destroy()
+            enemy.destroy()
+        }
+        for(let enemy of this.chaseEnemies.children.entries) {
+            enemy.hp.destroy()
+            enemy.destroy()
+        }
+        for(let enemy of this.tankEnemies.children.entries) {
+            enemy.hp.destroy()
+            enemy.destroy()
+        }
+        for(let enemy of this.rotateEnemies.children.entries) {
+            enemy.hp.destroy()
+            enemy.destroy()
+        }
+    }
+
     determineEnemySpawn() {
-        const rotateChance = Phaser.Math.Between(0, 8)
-        if(rotateChance == 0) {
-            let rotateEnemy = this.rotateEnemies.get()
-            if(rotateEnemy) {
-                let enemyHpClass = new EnemyHP(this, 30)
-                this.add.existing(enemyHpClass)
-                rotateEnemy.hp = enemyHpClass
-                rotateEnemy.spawnEnemy()
-            }
-        }
-        let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
-        const basicChance = Phaser.Math.Between(0, (10 - (elapseMinutes > 10 ? 10 : elapseMinutes)))
-        if(basicChance == 0) {
-            let enemy = this.enemies.get() 
-            if(enemy) {
-                let enemyHpClass = new EnemyHP(this, 10)
-                this.add.existing(enemyHpClass)
-                enemy.hp = enemyHpClass
-                enemy.spawnEnemy()
-            }
-        }
-        const chaseChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 5 ? 50 : elapseMinutes * 10))
-        if(chaseChance == 0) {
-            let chaseEnemy = this.chaseEnemies.get()
-            if(chaseEnemy) {
-                let enemyHpClass = new EnemyHP(this, 20)
-                this.add.existing(enemyHpClass)
-                chaseEnemy.hp = enemyHpClass
-                chaseEnemy.spawn()
-            }
-        }
-        if (elapseMinutes >= 1) {
-            const tankChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 10 ? 10 : elapseMinutes))
-            if(tankChance == 0) {
-                let tankEnemy = this.tankEnemies.get()
-                if(tankEnemy) {
-                    let enemyHpClass = new EnemyHP(this, 100)
+
+        if(!this.currentBoss) {
+                let bossChance = Phaser.Math.Between(0,0)
+                if(bossChance == 0) {
+                    console.log("Spawning boss")
+                    this.currentBoss = new BossOne(this)
+                    this.currentBoss.hp = new EnemyHP(this, 1000)
+                    this.currentBoss.spawnEnemy()
+                    this.destroyAllEnemies()
+                    return
+                }
+                console.log("Should never hit")
+             const rotateChance = Phaser.Math.Between(0, 8)
+            if(rotateChance == 0) {
+                let rotateEnemy = this.rotateEnemies.get()
+                if(rotateEnemy) {
+                    let enemyHpClass = new EnemyHP(this, 30)
                     this.add.existing(enemyHpClass)
-                    tankEnemy.hp = enemyHpClass
-                    tankEnemy.spawn()
+                    rotateEnemy.hp = enemyHpClass
+                    rotateEnemy.spawnEnemy()
+                }
+            }
+            let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
+            const basicChance = Phaser.Math.Between(0, (10 - (elapseMinutes > 10 ? 10 : elapseMinutes)))
+            if(basicChance == 0) {
+                let enemy = this.enemies.get() 
+                if(enemy) {
+                    let enemyHpClass = new EnemyHP(this, 10)
+                    this.add.existing(enemyHpClass)
+                    enemy.hp = enemyHpClass
+                    enemy.spawnEnemy()
+                }
+            }
+            const chaseChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 5 ? 50 : elapseMinutes * 10))
+            if(chaseChance == 0) {
+                let chaseEnemy = this.chaseEnemies.get()
+                if(chaseEnemy) {
+                    let enemyHpClass = new EnemyHP(this, 20)
+                    this.add.existing(enemyHpClass)
+                    chaseEnemy.hp = enemyHpClass
+                    chaseEnemy.spawn()
+                }
+            }
+            if (elapseMinutes >= 1) {
+                const tankChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 10 ? 10 : elapseMinutes))
+                if(tankChance == 0) {
+                    let tankEnemy = this.tankEnemies.get()
+                    if(tankEnemy) {
+                        let enemyHpClass = new EnemyHP(this, 100)
+                        this.add.existing(enemyHpClass)
+                        tankEnemy.hp = enemyHpClass
+                        tankEnemy.spawn()
+                }
             }
         }
-    }
-        this.countDownUntilEnemySpawn = 200
-    }
+            this.countDownUntilEnemySpawn = 200
+    } 
+}
 
     checkTurretBulletCollision() {  
         for(let bullet of this.turretBullets.children.entries) {
@@ -460,7 +494,7 @@ export class Game extends Scene {
         this.checkTurretBulletCollision()
         this.checkPlayerBulletCollision()
         //determine enemy spawning
-        if(this.countDownUntilEnemySpawn <= 0) {
+        if(this.countDownUntilEnemySpawn <= 0 && this.currentBoss == null) {
             this.determineEnemySpawn()
         }else {
             this.countDownUntilEnemySpawn -= delta
