@@ -51,6 +51,8 @@ export class Preloader extends Scene
 
         this.load.image('rotateEnemy', "rotateEnemy.png")
 
+        this.load.image('bossOne', "bossOne.png")
+
         let cash = localStorage.getItem("jarShotPlayerCash");
         if (!cash) {
             localStorage.setItem("jarShotPlayerCash", GameState.playerCash);
