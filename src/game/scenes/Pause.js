@@ -28,7 +28,7 @@ export class Pause extends Scene {
         this.exitButton.on('pointerup', () => {
             this.scene.stop('Game')
             this.scene.stop()
-        /this.scene.start("MainMenu")
+        this.scene.start("MainMenu")
         })
     }
 }

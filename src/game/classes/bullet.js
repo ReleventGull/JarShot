@@ -9,7 +9,6 @@ export default class Bullet extends Phaser.GameObjects.Image {
                 this.damage
             }
             init(config){
-                
                 this.speed = Phaser.Math.GetSpeed((config.bulletSpeedLevel * config.multiplier) * config.bulletSpeed, 1)
                 this.damage = config.bulletDamage * config.bulletDamageLevel
             }
