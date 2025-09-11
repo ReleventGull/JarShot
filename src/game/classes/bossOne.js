@@ -3,7 +3,6 @@ import { GameObjects } from "phaser";
 export class BossOne extends Phaser.GameObjects.Image {
     constructor(scene) {
         super(scene, 0, 0, "bossOne")
-        console.log("IM STARTING", scene)
         this.scene = scene
     }
     moveCooldown = 300
@@ -54,7 +53,6 @@ export class BossOne extends Phaser.GameObjects.Image {
             
     }
     bulletRain(delta) {
-        console.log("IM SITLL RUNNING I THINK");
         if(!this.isBulletRainReady) {
             if(this.container.x - this.bulletRainMovementSpeed * delta < this.width/2)  {
                 this.isBulletRainReady = true

@@ -369,8 +369,42 @@ export class Game extends Scene {
     }
 }
 
+    checkBossBulletsForCollision() {
+        for(let bullet of this.bossOneBullets.children.entries) {
+            //first check for collision with player
+            let checkForPlayerCollision = Phaser.Geom.Intersects.RectangleToRectangle(this.player.body.getBounds(), bullet.getBounds())
+            if(checkForPlayerCollision) {
+                bullet.destroy()
+                this.playerLives -= 1
+                this.player.dimPlayer()
+                this.updatePlayerHealthBarOnDamage()
+                if(this.playerLives <= 0) {
+                setTimeout(() => {
+                    this.scene.start("MainMenu")
+                    }, 3000)
+                this.add.text(this.scale.width / 2, this.scale.height / 2, "YOU DIED",
+                    {
+                        color: "red",
+                        fontSize: "4em"
+                    }
+                ).setOrigin(.5)
+                this.scene.pause()
+                }
+            }
+            if(!bullet.active) {
+                continue
+            }
+            for(let playerBullet of this.bullets.children.entries) {
+                let checkBulletCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), playerBullet.getBounds())
+                if(checkBulletCollide) {
+                    playerBullet.destroy()
+                    bullet.destroy()
+                }
+            }
+        }
+        
+    }
     create () {
-        console.log("I should run once", this.currentBoss);
         this.bullets = this.add.group({ //refers to the bullet class up above
             classType: Bullet,
             maxSize: 50,
@@ -503,6 +537,7 @@ export class Game extends Scene {
         //Checking for collisions with everything
         this.checkCollisionForPlayer()
         this.checkTurretBulletCollision()
+        this.checkBossBulletsForCollision() 
         this.checkPlayerBulletCollision()
         //determine enemy spawning
         if(this.countDownUntilEnemySpawn <= 0 && this.currentBoss == null) {
