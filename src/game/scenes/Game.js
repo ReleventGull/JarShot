@@ -64,14 +64,12 @@ export class Game extends Scene {
         if(!this.currentBoss) {
                 let bossChance = Phaser.Math.Between(0,0)
                 if(bossChance == 0) {
-                    console.log("Spawning boss")
                     this.currentBoss = new BossOne(this)
                     this.currentBoss.hp = new EnemyHP(this, 1000)
                     this.currentBoss.spawnEnemy()
                     this.destroyAllEnemies()
                     return
                 }
-                console.log("Should never hit")
              const rotateChance = Phaser.Math.Between(0, 8)
             if(rotateChance == 0) {
                 let rotateEnemy = this.rotateEnemies.get()
@@ -372,6 +370,7 @@ export class Game extends Scene {
 }
 
     create () {
+        console.log("I should run once", this.currentBoss);
         this.bullets = this.add.group({ //refers to the bullet class up above
             classType: Bullet,
             maxSize: 50,
@@ -411,6 +410,14 @@ export class Game extends Scene {
             maxSize: 1,
             runChildUpdate: true
         })
+
+        this.bossOneBullets = this.add.group({
+            classType: Bullet,
+            maxSize: 50,
+            runChildUpdate: true
+        })
+
+        
         //Adds a pause button
         this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P)
         
@@ -442,6 +449,9 @@ export class Game extends Scene {
     }
     
     update (time, delta) {
+        if(!this) {
+            return
+        }
         //Pauses Game loading the pause scene
         if(this.pKey.isDown && !this.isPaused) {
             this.pauseCooldown == 500
@@ -490,6 +500,7 @@ export class Game extends Scene {
             this.cooldownCount -= delta
         }
        
+        //Checking for collisions with everything
         this.checkCollisionForPlayer()
         this.checkTurretBulletCollision()
         this.checkPlayerBulletCollision()
@@ -499,5 +510,9 @@ export class Game extends Scene {
         }else {
             this.countDownUntilEnemySpawn -= delta
         }
-        }   
-    }
+        //Check if boss is active, is so run their update
+        if(this.currentBoss) {
+            this.currentBoss.update(time, delta)
+        }
+    }   
+}
