@@ -14,9 +14,9 @@ export default class Bullet extends Phaser.GameObjects.Image {
             }
 
             fire(targetX, targetY, startingPointx, startingPointY) {
+                this.setPosition(startingPointx, startingPointY)
                 this.setActive(true)
                 this.setVisible(true)
-                this.setPosition(startingPointx, startingPointY)
                 const angle = Phaser.Math.Angle.Between(targetX, targetY, startingPointx, startingPointY)
                 this.setRotation(angle + Math.PI)
                 this.incX = Math.cos(angle); //Tell us which way the bullet should increment on the x and y axis
