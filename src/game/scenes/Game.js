@@ -62,7 +62,7 @@ export class Game extends Scene {
     determineEnemySpawn() {
 
         if(!this.currentBoss) {
-                let bossChance = Phaser.Math.Between(0,0)
+                let bossChance = Phaser.Math.Between(1, 800)
                 if(bossChance == 0) {
                     this.currentBoss = new BossOne(this)
                     this.currentBoss.hp = new EnemyHP(this, 1000)
@@ -70,7 +70,7 @@ export class Game extends Scene {
                     this.destroyAllEnemies()
                     return
                 }
-             const rotateChance = Phaser.Math.Between(0, 8)
+            const rotateChance = Phaser.Math.Between(0, 8)
             if(rotateChance == 0) {
                 let rotateEnemy = this.rotateEnemies.get()
                 if(rotateEnemy) {
@@ -81,7 +81,7 @@ export class Game extends Scene {
                 }
             }
             let elapseMinutes = Math.floor(Math.floor(this.elapsedTime/1000)/60)
-            const basicChance = Phaser.Math.Between(0, (10 - (elapseMinutes > 10 ? 10 : elapseMinutes)))
+            const basicChance = Phaser.Math.Between(0, 10 - (elapseMinutes > 5 ? 9 : elapseMinutes * 1.5))
             if(basicChance == 0) {
                 let enemy = this.enemies.get() 
                 if(enemy) {
@@ -91,7 +91,7 @@ export class Game extends Scene {
                     enemy.spawnEnemy()
                 }
             }
-            const chaseChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 5 ? 50 : elapseMinutes * 10))
+            const chaseChance = Phaser.Math.Between(0, 50 - (elapseMinutes > 5 ? 40 : elapseMinutes * 10))
             if(chaseChance == 0) {
                 let chaseEnemy = this.chaseEnemies.get()
                 if(chaseEnemy) {
@@ -123,8 +123,8 @@ export class Game extends Scene {
             for(let enemy of this.enemies.children.entries) {
                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
                 if(checkCollide) {
-                    bullet.destroy()
                     enemy.hp.updateHealth(bullet.damage) 
+                    bullet.destroy()
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
                         this.updateCash()
@@ -139,8 +139,8 @@ export class Game extends Scene {
             for(let enemy of this.chaseEnemies.children.entries) {
                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
                 if(checkCollide) {
-                    bullet.destroy()
                     enemy.hp.updateHealth(bullet.damage) 
+                     bullet.destroy()
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
                         this.updateCash()
@@ -155,8 +155,8 @@ export class Game extends Scene {
             for(let enemy of this.tankEnemies.children.entries) {
                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
                 if(checkCollide) {
-                    bullet.destroy()
                     enemy.hp.updateHealth(bullet.damage) 
+                    bullet.destroy()
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
                         this.updateCash()
@@ -171,8 +171,8 @@ export class Game extends Scene {
             for(let enemy of this.rotateEnemies.children.entries) {
                 checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
                 if(checkCollide) {
-                    bullet.destroy()
                     enemy.hp.updateHealth(bullet.damage) 
+                    bullet.destroy()
                     if(enemy.hp.currentValue <= 0 ) {
                         GameState.playerCash += enemy.cashPerKill
                         this.updateCash()
@@ -190,7 +190,6 @@ export class Game extends Scene {
             let checkCollide
             for(let enemy of this.enemies.children.entries) {
                  checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), enemy.getBounds())
-
                 if(checkCollide && !enemy.isHit) {
                     enemy.isHit = 100
                     checkCollide = false
@@ -264,6 +263,23 @@ export class Game extends Scene {
                     break;
                 }
             }
+             if(!bullet.active || !this.currentBoss) {
+                continue
+            }
+            checkCollide = Phaser.Geom.Intersects.RectangleToRectangle(bullet.getBounds(), this.currentBoss.getBounds())
+            if(checkCollide) {
+                this.currentBoss.hp.updateHealth(bullet.damage)
+                bullet.destroy()
+                if(this.currentBoss.hp.currentValue <= 0) {
+                    this.currentBoss.hp.destroy()
+                    this.currentBoss.destroy()
+                    this.currentBoss = null
+                    //Add game cash and boss rewards
+                }
+            }
+            
+            
+
         }
     }
 
@@ -456,7 +472,8 @@ export class Game extends Scene {
         this.pKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.P)
         
         //sets the elapsed time back to 0
-        this.elapsedTime = 0
+        //For for minute (minutes desired * 60000)
+        this.elapsedTime = 60000 * 5
         //Sets how long the enemies cooldown will be when they attack the player
         this.isOnPlayerCooldown = 300
         this.player = new Player(this)

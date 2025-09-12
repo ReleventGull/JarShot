@@ -53,16 +53,8 @@ export class Turret extends Phaser.GameObjects.Container {
         this.setRotation(angle)
     }
     searchForEnemy() {
-        let shortestDistance = 10000000
-        let chosenEnemy;
         let enemies = [...this.scene.enemies.children.entries, ...this.scene.chaseEnemies.children.entries, ...this.scene.tankEnemies.children.entries, ...this.scene.rotateEnemies.children.entries]
-        for(let i = 0; i < enemies.length; i++) {
-            let currentEnemy = enemies[i]
-            let distance = Phaser.Math.Distance.Between(this.x, this.y, currentEnemy.container.x, currentEnemy.container.y)
-            if(shortestDistance > distance) {
-                chosenEnemy = currentEnemy
-            }
-        }
+        let chosenEnemy = Phaser.Utils.Array.GetRandom(enemies)
         if(chosenEnemy){
             this.targetedEnemy = chosenEnemy
         }
@@ -87,9 +79,10 @@ export class Turret extends Phaser.GameObjects.Container {
             if(this.targetedEnemy) {
                 if (this.targetedEnemy.active) {
                     this.trackEnemy(delta)
-                    let bullet = this.scene.turretBullets.get()
-                    if(bullet && this.reloadCooldown == 0) {
-                        this.reloadCooldown = 1100 - (GameState.upgrades.TurretReloadSpeed.currentLevel * 120)
+                    
+                    if(this.reloadCooldown == 0) {
+                        let bullet = this.scene.turretBullets.get()
+                        if(bullet && this.reloadCooldown == 0) {
                             bullet.init({
                                 bulletSpeed: GameState.upgrades.TurretBulletSpeed.baseSpeed,
                                 bulletSpeedLevel: GameState.upgrades.TurretBulletSpeed.currentLevel,
@@ -97,9 +90,10 @@ export class Turret extends Phaser.GameObjects.Container {
                                 bulletDamage: GameState.upgrades.TurretBulletDamage.baseDamage,
                                 bulletDamageLevel: GameState.upgrades.TurretBulletDamage.currentLevel
                             })
-                       
                         bullet.fire(this.x_hit, this.y_hit, this.x, this.y)
-                    }
+                        this.reloadCooldown = 1100 - (GameState.upgrades.TurretReloadSpeed.currentLevel * 120)
+                        }
+                    } 
                 }else {
                     this.removeEnemy()
                 }

@@ -31,7 +31,6 @@ export default class Enemy extends Phaser.GameObjects.Image {
             this.direction2 = "down"
         }else {
             let randomPixel = Phaser.Math.Between(0, this.scene.scale.height)
-            randomPixel = randomPixel + this.height > this.scene.scale.height ? randomPixel = this.scene.scale.height - this.height : randomPixel
             this.container.setPosition(0, randomPixel)
             this.direction2 = "right";
         }
@@ -78,7 +77,7 @@ export default class Enemy extends Phaser.GameObjects.Image {
         this.setVisible(false)
     }
     update(time, delta) {
-        
+
         if (this.isHit >= 0) {
             this.isHit -= delta
             if(this.isHit < 0) {
